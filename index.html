@@ -238,6 +238,91 @@ iframe.preview-frame{width:100%;min-height:230px;border:none;background:#fff;}
 .pill-nav{display:flex;justify-content:space-between;margin-top:28px;}
 .hidden{display:none !important;}
 
+/* ---- Confeti ---- */
+.confetti-piece{
+  position:fixed;top:38%;width:9px;height:14px;z-index:1400;border-radius:2px;pointer-events:none;
+  animation:confetti-fall 1.7s cubic-bezier(.25,.46,.45,.94) forwards;
+}
+@keyframes confetti-fall{
+  0%{transform:translate(0,0) rotate(0deg);opacity:1;}
+  100%{transform:translate(calc(var(--dx)*160px), 62vh) rotate(var(--rot));opacity:0;}
+}
+
+/* ---- Popup de insignia / subida de nivel ---- */
+.badge-overlay{
+  position:fixed;inset:0;background:rgba(15,25,20,.55);z-index:1500;display:flex;align-items:center;justify-content:center;
+  animation:overlay-in .2s ease;backdrop-filter:blur(2px);
+}
+@keyframes overlay-in{from{opacity:0;}to{opacity:1;}}
+.badge-popup{
+  background:#fff;border-radius:20px;padding:30px 36px;text-align:center;width:280px;
+  box-shadow:0 30px 60px -15px rgba(0,0,0,.4);animation:popup-in .45s cubic-bezier(.2,1.4,.4,1);
+  border:3px solid var(--gold);position:relative;
+}
+.badge-popup.rarity-bronce{border-color:#B08D57;}
+.badge-popup.rarity-plata{border-color:#9AA5B1;}
+.badge-popup.rarity-oro{border-color:#D4AF37;box-shadow:0 0 0 6px rgba(212,175,55,.15), 0 30px 60px -15px rgba(0,0,0,.4);}
+@keyframes popup-in{0%{transform:scale(.6) translateY(30px);opacity:0;}100%{transform:scale(1) translateY(0);opacity:1;}}
+.badge-popup-label{font-family:'JetBrains Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-soft);font-weight:700;margin-bottom:10px;}
+.badge-popup-icon{font-size:56px;line-height:1;margin-bottom:10px;filter:drop-shadow(0 6px 10px rgba(0,0,0,.15));animation:icon-pop .6s ease .1s both;}
+@keyframes icon-pop{0%{transform:scale(0) rotate(-20deg);}70%{transform:scale(1.15) rotate(6deg);}100%{transform:scale(1) rotate(0);}}
+.badge-popup-name{font-family:'Fraunces',serif;font-weight:700;font-size:19px;margin-bottom:6px;}
+.badge-popup-desc{font-size:12.5px;color:var(--ink-soft);margin-bottom:12px;}
+.badge-popup-rarity{font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.12em;font-weight:700;margin-bottom:14px;opacity:.6;}
+
+/* ---- HUD tipo juego (sidebar) ---- */
+.hud{background:rgba(0,0,0,.18);border-radius:14px;padding:14px;margin-bottom:10px;border:1px solid rgba(255,255,255,.08);}
+.hud-row{display:flex;align-items:center;gap:10px;margin-bottom:9px;}
+.hud-row:last-child{margin-bottom:0;}
+.hud-avatar{
+  width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,#8FD9AE,#3457D5);display:flex;
+  align-items:center;justify-content:center;font-weight:800;font-family:'Fraunces',serif;color:#0F2E1D;flex-shrink:0;font-size:15px;
+}
+.hud-stats{font-size:11.5px;color:#AFD4BE;line-height:1.5;}
+.hud-stats b{color:#fff;font-size:13px;}
+.hud-mini{display:flex;gap:12px;font-size:11.5px;color:#BFDCC9;}
+.hud-mini span{display:flex;align-items:center;gap:4px;}
+
+/* ---- Mapa de niveles tipo juego ---- */
+.level-map{position:relative;padding:20px 6px 10px;}
+.level-map-path{position:relative;display:flex;flex-direction:column;gap:0;}
+.map-node-row{display:flex;align-items:center;gap:18px;position:relative;padding:14px 4px;}
+.map-node-row:not(:last-child)::after{
+  content:"";position:absolute;left:33px;bottom:-4px;width:3px;height:26px;background:repeating-linear-gradient(to bottom,var(--line) 0 6px,transparent 6px 12px);
+}
+.map-node{
+  width:68px;height:68px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  font-size:28px;position:relative;box-shadow:0 6px 14px -4px rgba(0,0,0,.25);border:4px solid #fff;cursor:pointer;
+  transition:transform .15s ease;
+}
+.map-node:hover{transform:scale(1.06) rotate(-2deg);}
+.map-node.locked{filter:grayscale(1);opacity:.55;cursor:default;}
+.map-node.locked:hover{transform:none;}
+.map-node-lock{position:absolute;bottom:-4px;right:-4px;background:#fff;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:12px;box-shadow:0 2px 5px rgba(0,0,0,.2);}
+.map-node-info{flex:1;}
+.map-node-title{font-weight:700;font-size:15.5px;font-family:'Fraunces',serif;}
+.map-node-sub{font-size:12.5px;color:var(--ink-soft);}
+.map-stars{margin-top:3px;font-size:13px;letter-spacing:2px;}
+.map-stars .on{color:var(--gold);}
+.map-stars .off{color:var(--line);}
+
+/* ---- Grid de insignias tipo logros de juego ---- */
+.achv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-top:14px;}
+.achv-card{
+  border-radius:14px;padding:16px 12px;text-align:center;background:#fff;border:2px solid var(--line);
+  transition:transform .15s ease;
+}
+.achv-card.unlocked{transform:none;}
+.achv-card.unlocked:hover{transform:translateY(-3px);}
+.achv-card.unlocked.rarity-bronce{border-color:#B08D57;background:linear-gradient(180deg,#fff,#FBF3E8);}
+.achv-card.unlocked.rarity-plata{border-color:#9AA5B1;background:linear-gradient(180deg,#fff,#F3F5F7);}
+.achv-card.unlocked.rarity-oro{border-color:#D4AF37;background:linear-gradient(180deg,#fff,#FBF2D6);box-shadow:0 0 0 4px rgba(212,175,55,.12);}
+.achv-card.locked{opacity:.5;filter:grayscale(.4);}
+.achv-icon{font-size:30px;margin-bottom:8px;}
+.achv-name{font-size:12.5px;font-weight:700;margin-bottom:3px;}
+.achv-desc{font-size:11px;color:var(--ink-soft);}
+.achv-rarity{font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-top:6px;opacity:.55;}
+
 /* Acentos por nivel — cada nivel tiene identidad de color propia */
 .accent-chip{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;padding:4px 10px;border-radius:7px;letter-spacing:-.01em;}
 .chip-green{background:var(--green-tint);color:var(--green-deep);}
@@ -533,17 +618,52 @@ const defaultState = {
   badges:{}, // {badgeId:true}
   diagnosticDone:false,
   editorSaved:"<!DOCTYPE html>\n<html>\n  <head><title>Mi proyecto libre</title></head>\n  <body>\n    <h1>¡Escribe lo que quieras aquí!</h1>\n  </body>\n</html>",
-  chat:[]
+  chat:[],
+  flags:{glossary:false, chat:false, freeEditor:false, downloaded:false, noHintSpot:false, perfectMCQ:false, diagnostic:false, fullscreen:false},
+  streak:{count:0, lastDate:null}
 };
 let state = loadState() || JSON.parse(JSON.stringify(defaultState));
+if(!state.flags) state.flags = JSON.parse(JSON.stringify(defaultState.flags));
+if(!state.streak) state.streak = JSON.parse(JSON.stringify(defaultState.streak));
 
+function updateStreak(){
+  const today = new Date().toISOString().slice(0,10);
+  if(state.streak.lastDate === today) return;
+  if(state.streak.lastDate){
+    const prev = new Date(state.streak.lastDate);
+    const diffDays = Math.round((new Date(today) - prev)/86400000);
+    state.streak.count = diffDays===1 ? state.streak.count+1 : 1;
+  }else{
+    state.streak.count = 1;
+  }
+  state.streak.lastDate = today;
+  saveState();
+}
+function playerLevel(){ return Math.floor(state.xp/100)+1; }
+function xpIntoLevel(){ return state.xp%100; }
+
+const RARITY_COLOR = {bronce:"#B08D57", plata:"#9AA5B1", oro:"#D4AF37"};
 const BADGES = [
-  {id:"primer_codigo", name:"Primer código", cond:s=>Object.keys(s.completedLessons).length>=1, icon:"🏆"},
-  {id:"nivel0_completo", name:"Fundamentos claros", cond:s=>levelComplete(s,"n0"), icon:"🧭"},
-  {id:"nivel1_completo", name:"Primera página web", cond:s=>levelComplete(s,"n1"), icon:"📄"},
-  {id:"nivel2_completo", name:"Maestro de los encabezados", cond:s=>levelComplete(s,"n2"), icon:"✍️"},
-  {id:"nivel3_completo", name:"Constructor de enlaces", cond:s=>levelComplete(s,"n3"), icon:"🔗"},
-  {id:"racha3", name:"3 lecciones en un día", cond:s=>Object.keys(s.completedLessons).length>=3, icon:"🔥"},
+  {id:"primer_codigo", name:"Primer código", desc:"Completa tu primera lección.", cond:s=>Object.keys(s.completedLessons).length>=1, icon:"🏆", rarity:"bronce"},
+  {id:"nivel0_completo", name:"Fundamentos claros", desc:"Termina el Nivel 0 completo.", cond:s=>levelComplete(s,"n0"), icon:"🧭", rarity:"bronce"},
+  {id:"nivel1_completo", name:"Primera página web", desc:"Termina el Nivel 1 completo.", cond:s=>levelComplete(s,"n1"), icon:"📄", rarity:"bronce"},
+  {id:"nivel2_completo", name:"Maestro de los encabezados", desc:"Termina el Nivel 2 completo.", cond:s=>levelComplete(s,"n2"), icon:"✍️", rarity:"plata"},
+  {id:"nivel3_completo", name:"Constructor de enlaces", desc:"Termina el Nivel 3 completo.", cond:s=>levelComplete(s,"n3"), icon:"🔗", rarity:"plata"},
+  {id:"graduado", name:"Graduado HTML", desc:"Completa TODOS los niveles disponibles.", cond:s=>LEVELS.every(l=>levelComplete(s,l.id)), icon:"🎓", rarity:"oro"},
+  {id:"racha3", name:"En marcha", desc:"Completa 3 lecciones.", cond:s=>Object.keys(s.completedLessons).length>=3, icon:"🔥", rarity:"bronce"},
+  {id:"racha8", name:"Imparable", desc:"Completa 8 lecciones.", cond:s=>Object.keys(s.completedLessons).length>=8, icon:"⚡", rarity:"plata"},
+  {id:"xp100", name:"100 XP", desc:"Alcanza 100 puntos de experiencia.", cond:s=>s.xp>=100, icon:"⭐", rarity:"bronce"},
+  {id:"xp300", name:"300 XP", desc:"Alcanza 300 puntos de experiencia.", cond:s=>s.xp>=300, icon:"🌟", rarity:"plata"},
+  {id:"xp600", name:"600 XP", desc:"Alcanza 600 puntos de experiencia.", cond:s=>s.xp>=600, icon:"💫", rarity:"oro"},
+  {id:"glosario", name:"Explorador del glosario", desc:"Visita la sección Glosario.", cond:s=>s.flags.glossary, icon:"📖", rarity:"bronce"},
+  {id:"charlante", name:"Charlante", desc:"Hazle una pregunta a tu profesor virtual.", cond:s=>s.flags.chat, icon:"💬", rarity:"bronce"},
+  {id:"lab_libre", name:"Programador libre", desc:"Ejecuta código en el Editor libre.", cond:s=>s.flags.freeEditor, icon:"🧪", rarity:"bronce"},
+  {id:"descarga", name:"Primer .html descargado", desc:"Descarga un proyecto como archivo .html.", cond:s=>s.flags.downloaded, icon:"💾", rarity:"plata"},
+  {id:"detective", name:"Detective de errores", desc:"Corrige un error de código sin pedir pista.", cond:s=>s.flags.noHintSpot, icon:"🕵️", rarity:"plata"},
+  {id:"racha_dias", name:"Constancia", desc:"Entra en la app 2 días distintos.", cond:s=>s.streak.count>=2, icon:"📅", rarity:"plata"},
+  {id:"racha_dias5", name:"Hábito de programador", desc:"Entra en la app 5 días distintos seguidos.", cond:s=>s.streak.count>=5, icon:"🗓️", rarity:"oro"},
+  {id:"diagnostico", name:"Autoconocimiento", desc:"Completa el diagnóstico inicial.", cond:s=>s.flags.diagnostic, icon:"🧩", rarity:"bronce"},
+  {id:"pantalla_completa", name:"Modo inmersivo", desc:"Usa la vista previa en pantalla completa.", cond:s=>s.flags.fullscreen, icon:"⛶", rarity:"bronce"},
 ];
 function levelComplete(s, levelId){
   const lvl = LEVELS.find(l=>l.id===levelId);
@@ -555,23 +675,26 @@ function completedCount(){ return Object.keys(state.completedLessons).length; }
 
 function awardXP(n){ state.xp += n; }
 function checkBadges(){
-  let newBadge=null;
+  const newly=[];
   BADGES.forEach(b=>{
     if(!state.badges[b.id] && b.cond(state)){
       state.badges[b.id]=true;
-      newBadge=b;
+      newly.push(b);
     }
   });
-  return newBadge;
+  return newly;
 }
 function completeLesson(lessonId){
   if(!state.completedLessons[lessonId]){
     state.completedLessons[lessonId]=true;
+    const prevLevel = playerLevel();
     awardXP(15);
+    const leveledUp = playerLevel() > prevLevel;
     const nb = checkBadges();
     saveState();
-    if(nb){ showToast(nb.icon+" ¡Insignia desbloqueada: "+nb.name+"!"); }
-    else{ showToast("+15 XP — ¡Lección completada!"); }
+    if(leveledUp) showLevelUp(playerLevel());
+    if(nb.length){ nb.forEach((b,i)=> setTimeout(()=>showBadgePopup(b), leveledUp ? 900+i*1600 : i*1600)); }
+    else if(!leveledUp){ showToast("✨ +15 XP — ¡Lección completada!"); }
   }
   renderSidebar();
 }
@@ -583,6 +706,58 @@ function showToast(msg){
   t.classList.add("show");
   clearTimeout(window.__toastTimer);
   window.__toastTimer = setTimeout(()=>t.classList.remove("show"), 2600);
+}
+function triggerFlag(name, xpBonus){
+  if(state.flags[name]) return;
+  state.flags[name]=true;
+  if(xpBonus) awardXP(xpBonus);
+  const nb = checkBadges();
+  saveState();
+  nb.forEach((b,i)=> setTimeout(()=>showBadgePopup(b), i*1600));
+  renderSidebar();
+}
+function confettiBurst(){
+  const colors=["#8FD9AE","#3457D5","#F2C572","#E4572E","#48A672"];
+  for(let i=0;i<26;i++){
+    const p = document.createElement("div");
+    p.className="confetti-piece";
+    p.style.left = (45+Math.random()*10)+"%";
+    p.style.background = colors[i%colors.length];
+    p.style.setProperty("--dx", (Math.random()*2-1).toFixed(2));
+    p.style.setProperty("--rot", Math.floor(Math.random()*360)+"deg");
+    p.style.animationDelay = (Math.random()*0.25)+"s";
+    document.body.appendChild(p);
+    setTimeout(()=>p.remove(), 1900);
+  }
+}
+function showBadgePopup(badge){
+  confettiBurst();
+  const overlay = document.createElement("div");
+  overlay.className="badge-overlay";
+  overlay.innerHTML = `<div class="badge-popup rarity-${badge.rarity}">
+    <div class="badge-popup-label">Insignia desbloqueada</div>
+    <div class="badge-popup-icon">${badge.icon}</div>
+    <div class="badge-popup-name">${badge.name}</div>
+    <div class="badge-popup-desc">${badge.desc||""}</div>
+    <div class="badge-popup-rarity">${badge.rarity}</div>
+    <button class="btn btn-primary btn-sm" onclick="this.closest('.badge-overlay').remove()">¡Genial!</button>
+  </div>`;
+  document.body.appendChild(overlay);
+  setTimeout(()=>{ if(overlay.parentNode) overlay.remove(); }, 4200);
+}
+function showLevelUp(level){
+  confettiBurst();
+  const overlay = document.createElement("div");
+  overlay.className="badge-overlay";
+  overlay.innerHTML = `<div class="badge-popup rarity-oro levelup-popup">
+    <div class="badge-popup-label">¡Subiste de nivel!</div>
+    <div class="badge-popup-icon">🚀</div>
+    <div class="badge-popup-name">Nivel de jugador ${level}</div>
+    <div class="badge-popup-desc">Sigue así, cada lección te acerca a construir tu propia página web.</div>
+    <button class="btn btn-primary btn-sm" onclick="this.closest('.badge-overlay').remove()">¡Seguir!</button>
+  </div>`;
+  document.body.appendChild(overlay);
+  setTimeout(()=>{ if(overlay.parentNode) overlay.remove(); }, 3600);
 }
 function esc(html){ return html; } // el contenido ya viene pre-formateado con entidades donde corresponde
 
@@ -598,10 +773,23 @@ function go(page, opts){
 function renderSidebar(){
   const el = document.getElementById("sidebar");
   const pct = Math.round((completedCount()/totalLessons())*100);
+  const lvl_ = playerLevel();
   let html = `<div class="brand">‹Aprende<span>HTML</span>/&gt;</div>
   <div class="brand-sub">Tu profesor particular de programación</div>
-  <button class="nav-item ${state.page==='home'?'active':''}" onclick="go('home')">🏠 Inicio</button>
-  <button class="nav-item ${state.page==='dashboard'?'active':''}" onclick="go('dashboard')">📊 Mi progreso</button>
+  <div class="hud">
+    <div class="hud-row">
+      <div class="hud-avatar">${lvl_}</div>
+      <div class="hud-stats">Nivel de jugador<br><b>${xpIntoLevel()}/100 XP</b></div>
+    </div>
+    <div class="xp-bar-track"><div class="xp-bar-fill" style="width:${xpIntoLevel()}%"></div></div>
+    <div class="hud-mini" style="margin-top:9px;">
+      <span>🔥 ${state.streak.count||0} día${(state.streak.count||0)===1?'':'s'}</span>
+      <span>🏅 ${Object.keys(state.badges).length}/${BADGES.length}</span>
+      <span>📈 ${pct}%</span>
+    </div>
+  </div>
+  <button class="nav-item ${state.page==='home'?'active':''}" onclick="go('home')">🗺️ Mapa de niveles</button>
+  <button class="nav-item ${state.page==='dashboard'?'active':''}" onclick="go('dashboard')">🏆 Logros</button>
   <button class="nav-item ${state.page==='editor'?'active':''}" onclick="go('editor')">🧪 Editor libre</button>
   <button class="nav-item ${state.page==='glossary'?'active':''}" onclick="go('glossary')">📖 Glosario</button>
   <button class="nav-item ${state.page==='chat'?'active':''}" onclick="go('chat')">💬 Pregunta a tu profesor</button>
@@ -617,10 +805,6 @@ function renderSidebar(){
       <span class="nav-check">${allDone?'✓':done>0?done+'/'+lvl.lessons.length:''}</span>
     </button>`;
   });
-  html += `<div class="sidebar-progress">Progreso general · ${pct}%
-    <div class="xp-bar-track"><div class="xp-bar-fill" style="width:${pct}%"></div></div>
-    <div style="margin-top:8px;">⭐ ${state.xp} XP</div>
-  </div>`;
   el.innerHTML = html;
 }
 
@@ -682,18 +866,30 @@ function renderHome(){
     <p class="lead">Explicación sencilla → Ejemplo de código → Explicación línea por línea → Experimentas en el editor → Desafío → Retroalimentación clara.</p>
   </div>
   <div class="card">
-    <h3>Ruta de aprendizaje</h3>
-    ${LEVELS.map(lvl=>{
+    <h3>🗺️ Mapa de niveles</h3>
+    <p class="lead" style="margin-bottom:0;">Avanza por el camino. Completa un nivel para ganar sus estrellas y desbloquear su insignia.</p>
+    <div class="level-map"><div class="level-map-path">
+    ${LEVELS.map((lvl,idx)=>{
       const done = lvl.lessons.filter(l=>state.completedLessons[l.id]).length;
-      return `<div class="level-progress-row">
-        <span class="accent-chip chip-${lvl.color}">${lvl.icon} &lt;${lvl.tag}&gt;</span>
-        <div style="flex:1;">
-          <b>${lvl.title}</b><br><span style="font-size:12.5px;color:var(--ink-soft)">${lvl.desc}</span>
+      const pctL = done/lvl.lessons.length;
+      const stars = pctL>=1?3:pctL>0.5?2:pctL>0?1:0;
+      const prevDone = idx===0 || LEVELS[idx-1].lessons.every(l=>state.completedLessons[l.id]);
+      const locked = !prevDone && done===0;
+      const nodeBg = {green:"linear-gradient(145deg,#48A672,#1F4E36)",blue:"linear-gradient(145deg,#5E7BEA,#1D2E80)",gold:"linear-gradient(145deg,#E3B94A,#8A6A11)",coral:"linear-gradient(145deg,#F07A55,#9A3418)"}[lvl.color];
+      return `<div class="map-node-row">
+        <div class="map-node ${locked?'locked':''}" style="background:${nodeBg};" onclick="${locked?'':`go('level',{levelId:'${lvl.id}'})`}">
+          ${locked?'🔒':lvl.icon}
+          ${!locked?`<span class="map-node-lock">${done===lvl.lessons.length?'✅':(idx+1)}</span>`:''}
         </div>
-        <div class="mini-bar-track" style="max-width:90px;"><div class="mini-bar-fill" style="width:${(done/lvl.lessons.length)*100}%"></div></div>
-        <button class="btn btn-ghost btn-sm" onclick="go('level',{levelId:'${lvl.id}'})">Ver</button>
+        <div class="map-node-info">
+          <div class="map-node-title">${lvl.title}</div>
+          <div class="map-node-sub">${lvl.desc}</div>
+          <div class="map-stars">${[0,1,2].map(i=>`<span class="${i<stars?'on':'off'}">★</span>`).join("")} <span style="color:var(--ink-soft);font-size:11px;">(${done}/${lvl.lessons.length} lecciones)</span></div>
+        </div>
+        <button class="btn ${locked?'btn-ghost':'btn-primary'} btn-sm" ${locked?'disabled':''} onclick="go('level',{levelId:'${lvl.id}'})">${locked?'Bloqueado':done>0?'Continuar':'Jugar'}</button>
       </div>`;
     }).join("")}
+    </div></div>
     <p style="font-size:12.5px;color:var(--ink-soft);margin-top:10px;">Esta primera versión desarrolla a fondo los niveles 0 a 3 (fundamentos → estructura → texto → enlaces). La arquitectura ya está lista para seguir agregando imágenes, listas, tablas, formularios, HTML semántico y accesibilidad.</p>
   </div>`;
 }
@@ -749,7 +945,7 @@ function renderDiagQuestion(i){
   if(i>=DIAG_QUESTIONS.length){
     const beginnerScore = diagAnswers.filter(a=>a===0).length;
     box.innerHTML = `<p>${beginnerScore>=2 ? "Perfecto, vamos a comenzar desde el Nivel 0 — la base absoluta." : "Ya tienes algo de contexto, pero de todas formas te recomendamos pasar por el Nivel 0 para nivelar todos los conceptos base."}</p>
-    <button class="btn btn-primary" onclick="state.diagnosticDone=true; saveState(); go('level',{levelId:'n0'})">Comenzar en el Nivel 0</button>`;
+    <button class="btn btn-primary" onclick="state.diagnosticDone=true; triggerFlag('diagnostic',10); saveState(); go('level',{levelId:'n0'})">Comenzar en el Nivel 0</button>`;
     return;
   }
   const item = DIAG_QUESTIONS[i];
@@ -781,6 +977,7 @@ function renderLevel(){
 
 /* ---------- Lección ---------- */
 function renderLesson(){
+  hintUsed = false;
   const lvl = LEVELS.find(l=>l.id===state.levelId);
   const les = lvl.lessons[state.lessonIndex];
   const isDone = !!state.completedLessons[les.id];
@@ -907,7 +1104,9 @@ function answerOrder(){
   // así que ofrecemos botones de mover.
   giveFeedback(false, les.challenge.feedbackOk, "Usa los botones ↑ ↓ (debajo de cada línea) para reordenar, luego vuelve a comprobar.");
 }
+let hintUsed = false;
 function revealHint(kind){
+  hintUsed = true;
   const lvl = LEVELS.find(l=>l.id===state.levelId);
   const les = lvl.lessons[state.lessonIndex];
   document.getElementById("spot-hint").innerHTML = `<div class="callout hint">💡 ${les.challenge.bugHint}</div>`;
@@ -919,7 +1118,7 @@ function answerSpot(){
   const target = les.challenge.fixed.replace(/&lt;/g,"<").replace(/&gt;/g,">").replace(/\s+/g," ").trim();
   const ok = val.replace(/</g,"<").replace(/>/g,">") === target || val === les.challenge.fixed;
   giveFeedback(ok, les.challenge.feedbackOk, les.challenge.feedbackBad);
-  if(ok) completeLesson(les.id), enableNext();
+  if(ok){ completeLesson(les.id); enableNext(); if(!hintUsed) triggerFlag('noHintSpot',10); }
 }
 function giveFeedback(ok, okMsg, badMsg){
   const box = document.getElementById("challenge-feedback");
@@ -941,20 +1140,21 @@ function nextLesson(){
 /* ---------- Dashboard ---------- */
 function renderDashboard(){
   const pct = Math.round((completedCount()/totalLessons())*100);
-  return `<span class="eyebrow">TU PROGRESO</span>
-  <h1>Panel del estudiante</h1>
+  const earned = Object.keys(state.badges).length;
+  return `<span class="eyebrow">🏆 SALA DE TROFEOS</span>
+  <h1>Panel del jugador</h1>
   <div class="stat-row">
-    <div class="stat-box"><div class="num">${pct}%</div><div class="lbl">avance general</div></div>
+    <div class="stat-box"><div class="num">Nv. ${playerLevel()}</div><div class="lbl">nivel de jugador</div></div>
     <div class="stat-box"><div class="num">${state.xp}</div><div class="lbl">puntos XP</div></div>
     <div class="stat-box"><div class="num">${completedCount()}/${totalLessons()}</div><div class="lbl">lecciones completadas</div></div>
-    <div class="stat-box"><div class="num">${Object.keys(state.badges).length}/${BADGES.length}</div><div class="lbl">insignias</div></div>
+    <div class="stat-box"><div class="num">🔥 ${state.streak.count||0}</div><div class="lbl">racha de días</div></div>
   </div>
   <div class="card">
     <h3>Avance por nivel</h3>
     ${LEVELS.map(lvl=>{
       const done = lvl.lessons.filter(l=>state.completedLessons[l.id]).length;
       return `<div class="level-progress-row">
-        <span class="tag-chip">&lt;${lvl.tag}&gt;</span>
+        <span class="accent-chip chip-${lvl.color}">${lvl.icon} &lt;${lvl.tag}&gt;</span>
         <div style="flex:1;">${lvl.title}</div>
         <div class="mini-bar-track"><div class="mini-bar-fill" style="width:${(done/lvl.lessons.length)*100}%"></div></div>
         <div style="font-size:12.5px;color:var(--ink-soft);width:40px;text-align:right;">${done}/${lvl.lessons.length}</div>
@@ -962,13 +1162,25 @@ function renderDashboard(){
     }).join("")}
   </div>
   <div class="card">
-    <h3>Insignias</h3>
-    ${BADGES.map(b=>`<span class="badge ${state.badges[b.id]?'':'locked'}">${b.icon} ${b.name}</span>`).join("")}
+    <h3>Insignias · ${earned}/${BADGES.length} desbloqueadas</h3>
+    <div class="mini-bar-track" style="max-width:260px;margin-bottom:14px;"><div class="mini-bar-fill" style="width:${(earned/BADGES.length)*100}%;background:linear-gradient(90deg,var(--gold),#EBCB6B);"></div></div>
+    <div class="achv-grid">
+    ${BADGES.map(b=>{
+      const on = !!state.badges[b.id];
+      return `<div class="achv-card ${on?'unlocked':'locked'} rarity-${b.rarity}">
+        <div class="achv-icon">${on?b.icon:'🔒'}</div>
+        <div class="achv-name">${b.name}</div>
+        <div class="achv-desc">${on?b.desc:'???'}</div>
+        <div class="achv-rarity">${b.rarity}</div>
+      </div>`;
+    }).join("")}
+    </div>
   </div>`;
 }
 
 /* ---------- Glosario ---------- */
 function renderGlossary(){
+  triggerFlag('glossary',5);
   return `<span class="eyebrow">GLOSARIO</span>
   <h1>Términos clave</h1>
   <input id="gloss-search" type="text" placeholder="Buscar un término..." style="width:100%;padding:11px 14px;border:1px solid var(--line);border-radius:10px;font-size:14px;margin-bottom:16px;" oninput="filterGlossary()">
@@ -1022,7 +1234,7 @@ function wireEditor(taId, frameId){
 function runFreeEditor(){
   const ta = document.getElementById("free-editor");
   const frame = document.getElementById("free-preview");
-  if(ta && frame) frame.srcdoc = ta.value;
+  if(ta && frame){ frame.srcdoc = ta.value; triggerFlag('freeEditor',5); }
 }
 function clearFreeEditor(){
   document.getElementById("free-editor").value = "";
@@ -1045,10 +1257,11 @@ function downloadCode(taId){
   document.body.appendChild(a); a.click(); document.body.removeChild(a);
   URL.revokeObjectURL(url);
   showToast("Archivo .html descargado ✅");
+  triggerFlag('downloaded',10);
 }
 function toggleFullscreen(){
   const frame = document.getElementById("free-preview");
-  if(frame.requestFullscreen) frame.requestFullscreen();
+  if(frame.requestFullscreen){ frame.requestFullscreen(); triggerFlag('fullscreen',5); }
   else showToast("Pantalla completa no disponible en este navegador.");
 }
 
@@ -1081,6 +1294,7 @@ function sendChat(){
   input.value="";
   saveState();
   render();
+  triggerFlag('chat',5);
   const log = document.getElementById("chat-log");
   if(log) log.scrollTop = log.scrollHeight;
 }
@@ -1096,6 +1310,7 @@ function answerFAQ(text){
 function debounce(fn, ms){ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a), ms); }; }
 
 /* ---------- Init ---------- */
+updateStreak();
 render();
 </script>
 </body>
