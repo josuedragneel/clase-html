@@ -282,11 +282,19 @@ iframe.preview-frame{width:100%;min-height:230px;border:none;background:#fff;}
 .hud-stats b{color:#fff;font-size:13px;}
 .hud-mini{display:flex;gap:12px;font-size:11.5px;color:#BFDCC9;}
 .hud-mini span{display:flex;align-items:center;gap:4px;}
+.league-next{font-size:10.5px;color:#AFD4BE;margin-top:6px;}
+.daily-goal-row{display:flex;justify-content:space-between;font-size:11px;color:#D6E9DD;margin-top:11px;font-weight:600;}
+.daily-bar{height:5px;margin-top:5px;}
+.daily-fill{background:linear-gradient(90deg,#F2D27E,#E4572E);}
 
 /* ---- Mapa de niveles tipo juego ---- */
 .level-map{position:relative;padding:20px 6px 10px;}
 .level-map-path{position:relative;display:flex;flex-direction:column;gap:0;}
-.map-node-row{display:flex;align-items:center;gap:18px;position:relative;padding:14px 4px;}
+.map-node-row{display:flex;align-items:center;gap:18px;position:relative;padding:14px 4px;animation:node-in .5s cubic-bezier(.2,1.4,.4,1) both;animation-delay:calc(var(--i,0) * 90ms);}
+@keyframes node-in{0%{opacity:0;transform:translateY(16px);}100%{opacity:1;transform:translateY(0);}}
+.map-node-row.zig1{margin-left:34px;}
+.map-node-row.zig2{margin-left:64px;}
+@media (max-width:760px){.map-node-row.zig1,.map-node-row.zig2{margin-left:10px;}}
 .map-node-row:not(:last-child)::after{
   content:"";position:absolute;left:33px;bottom:-4px;width:3px;height:26px;background:repeating-linear-gradient(to bottom,var(--line) 0 6px,transparent 6px 12px);
 }
@@ -298,6 +306,9 @@ iframe.preview-frame{width:100%;min-height:230px;border:none;background:#fff;}
 .map-node:hover{transform:scale(1.06) rotate(-2deg);}
 .map-node.locked{filter:grayscale(1);opacity:.55;cursor:default;}
 .map-node.locked:hover{transform:none;}
+.map-node.next-up{animation:next-pulse 1.8s ease-in-out infinite;}
+@keyframes next-pulse{0%,100%{box-shadow:0 6px 14px -4px rgba(0,0,0,.25),0 0 0 0 rgba(72,166,114,.45);}50%{box-shadow:0 6px 14px -4px rgba(0,0,0,.25),0 0 0 9px rgba(72,166,114,0);}}
+.next-up-tag{font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:700;background:var(--green-tint);color:var(--green-deep);padding:2px 7px;border-radius:6px;letter-spacing:.05em;vertical-align:middle;margin-left:6px;}
 .map-node-lock{position:absolute;bottom:-4px;right:-4px;background:#fff;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:12px;box-shadow:0 2px 5px rgba(0,0,0,.2);}
 .map-node-info{flex:1;}
 .map-node-title{font-weight:700;font-size:15.5px;font-family:'Fraunces',serif;}
@@ -325,6 +336,10 @@ iframe.preview-frame{width:100%;min-height:230px;border:none;background:#fff;}
 
 /* Acentos por nivel — cada nivel tiene identidad de color propia */
 .accent-chip{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;padding:4px 10px;border-radius:7px;letter-spacing:-.01em;}
+.diff-chip{font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:700;padding:3px 8px;border-radius:7px;letter-spacing:.02em;vertical-align:middle;}
+.diff-green{background:var(--green-tint);color:var(--green-deep);}
+.diff-gold{background:var(--gold-tint);color:#7A5B0E;}
+.diff-coral{background:var(--coral-tint);color:var(--coral-deep);}
 .chip-green{background:var(--green-tint);color:var(--green-deep);}
 .chip-blue{background:var(--blue-tint);color:#1D2E80;}
 .chip-gold{background:var(--gold-tint);color:#7A5B0E;}
@@ -365,6 +380,43 @@ iframe.preview-frame{width:100%;min-height:230px;border:none;background:#fff;}
 .hero-preview-panel iframe{width:100%;min-height:150px;border:none;background:#fff;display:block;}
 .typing-cursor{display:inline-block;width:7px;height:15px;background:#8FD9AE;margin-left:1px;vertical-align:middle;animation:blink 0.9s steps(1) infinite;}
 @keyframes blink{50%{opacity:0;}}
+
+/* ---- Cuenta en la nube ---- */
+.account-hud{margin:2px 0 12px;}
+.account-row{display:flex;justify-content:space-between;align-items:center;font-size:11.5px;color:#D6E9DD;padding:2px 6px 7px;}
+.account-name{display:flex;align-items:center;gap:5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.account-status{font-family:'JetBrains Mono',monospace;font-size:9.5px;flex-shrink:0;margin-left:8px;}
+.status-syncing{color:#F2D27E;}
+.status-synced{color:#8FD9AE;}
+.status-error{color:#F5A488;}
+.status-no-account{color:#8FB89E;}
+.account-btn{
+  display:flex;align-items:center;gap:8px;width:100%;padding:9px 11px;border-radius:10px;
+  background:rgba(255,255,255,.07);border:1px dashed rgba(255,255,255,.25);color:#D6E9DD;
+  font-size:12.5px;font-weight:600;cursor:pointer;transition:background .15s ease;
+}
+.account-btn:hover{background:rgba(255,255,255,.13);}
+
+.auth-popup{
+  background:#fff;border-radius:20px;padding:30px 32px;text-align:left;width:320px;max-width:88vw;
+  box-shadow:0 30px 60px -15px rgba(0,0,0,.4);animation:popup-in .3s cubic-bezier(.2,1.4,.4,1);
+  border:1px solid var(--line);position:relative;
+}
+.auth-close{position:absolute;top:14px;right:14px;background:none;border:none;font-size:16px;color:var(--ink-soft);cursor:pointer;line-height:1;}
+.auth-input{width:100%;padding:11px 13px;border:1px solid var(--line);border-radius:10px;font-size:14px;margin-top:10px;font-family:inherit;}
+.auth-error{background:var(--coral-tint);color:var(--coral-deep);font-size:12.5px;padding:9px 11px;border-radius:8px;margin-top:10px;line-height:1.4;}
+
+/* ---- Track de ligas ---- */
+.league-track{display:flex;align-items:center;flex-wrap:wrap;gap:0;}
+.league-step{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:66px;opacity:.4;transition:opacity .2s ease;}
+.league-step.reached{opacity:1;}
+.league-step.current .league-step-icon{box-shadow:0 0 0 5px rgba(72,166,114,.16);transform:scale(1.1);}
+.league-step-icon{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;border:3px solid #fff;box-shadow:0 4px 10px -4px rgba(0,0,0,.25);transition:transform .15s ease;}
+.league-step-name{font-size:11.5px;font-weight:700;margin-top:2px;}
+.league-step-xp{font-size:9.5px;color:var(--ink-soft);font-family:'JetBrains Mono',monospace;}
+.league-step-line{flex:1;height:3px;background:var(--line);min-width:16px;border-radius:2px;margin-bottom:26px;}
+.league-step-line.filled{background:linear-gradient(90deg,var(--green-bright),var(--green));}
+.league-popup .badge-popup-label, .league-popup .badge-popup-name, .league-popup .badge-popup-desc{position:relative;z-index:1;}
 </style>
 </head>
 <body>
@@ -375,13 +427,18 @@ iframe.preview-frame{width:100%;min-height:230px;border:none;background:#fff;}
 </div>
 <div class="toast" id="toast"></div>
 
+<!-- Firebase (solo Authentication + Firestore, para sincronizar el progreso entre dispositivos) -->
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
+
 <script>
 /* =====================================================================
    APRENDE HTML — plataforma educativa de una sola página
    Estado en memoria + localStorage con fallback seguro (try/catch)
    ===================================================================== */
 
-/* ---------- Persistencia segura ---------- */
+/* ---------- Persistencia segura (local) ---------- */
 const STORAGE_KEY = "aprendeHTML_progreso_v1";
 let memoryFallback = {}; // si localStorage falla, guardamos aquí (dura la sesión)
 function saveState(){
@@ -391,6 +448,7 @@ function saveState(){
     memoryFallback = JSON.parse(JSON.stringify(state));
     console.warn("No se pudo usar localStorage, guardando solo en memoria de esta sesión.", e);
   }
+  syncToCloud();
 }
 function loadState(){
   try{
@@ -398,6 +456,178 @@ function loadState(){
     if(raw) return JSON.parse(raw);
   }catch(e){ /* sigue abajo */ }
   return memoryFallback && memoryFallback.xp !== undefined ? memoryFallback : null;
+}
+
+/* =====================================================================
+   Cuenta en la nube (Firebase) — progreso sincronizado entre dispositivos
+   ---------------------------------------------------------------------
+   CÓMO ACTIVARLO (una sola vez, gratis):
+   1. Ve a https://console.firebase.google.com y crea un proyecto.
+   2. Compilación → Authentication → pestaña "Sign-in method" → activa
+      el proveedor "Correo electrónico/contraseña".
+   3. Compilación → Firestore Database → "Crear base de datos" (modo
+      producción, elige la región más cercana a Panamá).
+   4. En Firestore, pestaña "Reglas", reemplaza todo por esto y publica:
+
+        rules_version = '2';
+        service cloud.firestore {
+          match /databases/{database}/documents {
+            match /progreso/{uid} {
+              allow read, write: if request.auth != null && request.auth.uid == uid;
+            }
+          }
+        }
+
+   5. Ícono de engranaje → "Configuración del proyecto" → baja a
+      "Tus apps" → clic en el ícono web </> → registra la app.
+   6. Firebase te muestra un objeto firebaseConfig: cópialo y pégalo
+      abajo, reemplazando el de ejemplo. ¡Listo!
+   Mientras no lo configures, la app sigue funcionando 100% normal,
+   guardando solo en este navegador (como hasta ahora).
+   ===================================================================== */
+const firebaseConfig = {
+  apiKey: "PEGA_AQUI_TU_API_KEY",
+  authDomain: "PEGA_AQUI_TU_PROYECTO.firebaseapp.com",
+  projectId: "PEGA_AQUI_TU_PROYECTO",
+  storageBucket: "PEGA_AQUI_TU_PROYECTO.appspot.com",
+  messagingSenderId: "000000000000",
+  appId: "PEGA_AQUI_TU_APP_ID"
+};
+const CLOUD_ENABLED = firebaseConfig.apiKey !== "PEGA_AQUI_TU_API_KEY";
+let cloudAuth=null, cloudDb=null, currentUser=null, cloudSyncTimer=null, cloudStatus="no-account"; // no-account | syncing | synced | error
+
+if(CLOUD_ENABLED && typeof firebase !== "undefined"){
+  try{
+    firebase.initializeApp(firebaseConfig);
+    cloudAuth = firebase.auth();
+    cloudDb = firebase.firestore();
+    cloudAuth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(()=>{});
+    cloudAuth.onAuthStateChanged(async (user)=>{
+      currentUser = user;
+      if(user){
+        cloudStatus = "syncing";
+        renderSidebar();
+        try{
+          const doc = await cloudDb.collection("progreso").doc(user.uid).get();
+          if(doc.exists && doc.data() && doc.data().state){
+            state = doc.data().state;
+            if(!state.flags) state.flags = JSON.parse(JSON.stringify(defaultState.flags));
+            if(!state.streak) state.streak = JSON.parse(JSON.stringify(defaultState.streak));
+          }else{
+            await cloudDb.collection("progreso").doc(user.uid).set({state, username:user.displayName||"", updatedAt:Date.now()});
+          }
+          cloudStatus = "synced";
+          updateStreak();
+          render();
+        }catch(e){
+          console.warn("No se pudo cargar el progreso de la nube.", e);
+          cloudStatus = "error";
+          renderSidebar();
+        }
+      }else{
+        cloudStatus = "no-account";
+        renderSidebar();
+      }
+    });
+  }catch(e){ console.warn("No se pudo iniciar Firebase.", e); }
+}
+
+function usernameToEmail(u){ return u.trim().toLowerCase()+"@estudiantes.aprendehtml.app"; }
+
+function syncToCloud(){
+  if(!cloudAuth || !currentUser) return;
+  cloudStatus = "syncing";
+  clearTimeout(cloudSyncTimer);
+  cloudSyncTimer = setTimeout(()=>{
+    cloudDb.collection("progreso").doc(currentUser.uid).set({state, username:currentUser.displayName||"", updatedAt:Date.now()})
+      .then(()=>{ cloudStatus="synced"; renderSidebar(); })
+      .catch((e)=>{ cloudStatus="error"; renderSidebar(); console.warn("No se pudo sincronizar con la nube.", e); });
+  }, 1200);
+}
+
+function accountStatusLabel(){
+  if(cloudStatus==="syncing") return "guardando…";
+  if(cloudStatus==="synced") return "sincronizado";
+  if(cloudStatus==="error") return "sin conexión";
+  return "";
+}
+
+function openAuthModal(mode){
+  document.getElementById("auth-overlay")?.remove();
+  const overlay = document.createElement("div");
+  overlay.className = "badge-overlay";
+  overlay.id = "auth-overlay";
+  overlay.innerHTML = renderAuthModal(mode || "login");
+  document.body.appendChild(overlay);
+}
+function closeAuthModal(){ document.getElementById("auth-overlay")?.remove(); }
+function renderAuthModal(mode){
+  const isLogin = mode==="login";
+  return `<div class="auth-popup">
+    <button class="auth-close" onclick="closeAuthModal()">✕</button>
+    <div class="badge-popup-label">${isLogin?"Iniciar sesión":"Crear cuenta"}</div>
+    <h3 style="margin-bottom:4px;">${isLogin?"Bienvenido de nuevo":"Guarda tu progreso en la nube"}</h3>
+    <p style="font-size:13px;color:var(--ink-soft);margin-top:0;">${isLogin?"Ingresa con tu usuario y contraseña para continuar donde lo dejaste, en cualquier dispositivo.":"Crea un usuario y contraseña para no perder tu progreso al cambiar de computadora o celular."}</p>
+    <div id="auth-error" class="auth-error hidden"></div>
+    <input id="auth-username" type="text" placeholder="Nombre de usuario" class="auth-input" autocomplete="username">
+    <input id="auth-password" type="password" placeholder="Contraseña" class="auth-input" autocomplete="${isLogin?'current-password':'new-password'}" onkeydown="if(event.key==='Enter')${isLogin?'submitLogin()':'submitRegister()'}">
+    ${isLogin?'':'<input id="auth-password2" type="password" placeholder="Repite la contraseña" class="auth-input" autocomplete="new-password" onkeydown="if(event.key===\'Enter\')submitRegister()">'}
+    <button class="btn btn-primary" style="width:100%;margin-top:14px;" onclick="${isLogin?'submitLogin()':'submitRegister()'}">${isLogin?"Entrar":"Crear cuenta"}</button>
+    <div style="text-align:center;font-size:12.5px;margin-top:12px;color:var(--ink-soft);">
+      ${isLogin?'¿No tienes cuenta? <a href="#" onclick="openAuthModal(\'register\');return false;">Regístrate</a>':'¿Ya tienes cuenta? <a href="#" onclick="openAuthModal(\'login\');return false;">Inicia sesión</a>'}
+    </div>
+    <button class="btn btn-ghost btn-sm" style="width:100%;margin-top:10px;" onclick="closeAuthModal()">Continuar sin cuenta</button>
+  </div>`;
+}
+function showAuthError(msg){
+  const el = document.getElementById("auth-error");
+  if(!el) return;
+  el.textContent = msg;
+  el.classList.remove("hidden");
+}
+function validUsername(u){ return /^[a-zA-Z0-9_.-]{3,20}$/.test(u); }
+async function submitRegister(){
+  if(!CLOUD_ENABLED){ showAuthError("La nube todavía no está configurada. Avísale a tu profesor."); return; }
+  const username = (document.getElementById("auth-username").value||"").trim();
+  const pass = document.getElementById("auth-password").value;
+  const pass2 = document.getElementById("auth-password2").value;
+  if(!validUsername(username)){ showAuthError("El usuario debe tener 3 a 20 letras, números, puntos o guiones, sin espacios."); return; }
+  if(pass.length<6){ showAuthError("La contraseña debe tener al menos 6 caracteres."); return; }
+  if(pass!==pass2){ showAuthError("Las contraseñas no coinciden."); return; }
+  try{
+    const cred = await cloudAuth.createUserWithEmailAndPassword(usernameToEmail(username), pass);
+    await cred.user.updateProfile({displayName: username});
+    await cloudDb.collection("progreso").doc(cred.user.uid).set({state, username, updatedAt:Date.now()});
+    closeAuthModal();
+    showToast(`✅ Cuenta creada. ¡Bienvenido, ${username}!`);
+  }catch(e){ showAuthError(authErrorMessage(e)); }
+}
+async function submitLogin(){
+  if(!CLOUD_ENABLED){ showAuthError("La nube todavía no está configurada. Avísale a tu profesor."); return; }
+  const username = (document.getElementById("auth-username").value||"").trim();
+  const pass = document.getElementById("auth-password").value;
+  if(!username || !pass){ showAuthError("Escribe tu usuario y contraseña."); return; }
+  try{
+    await cloudAuth.signInWithEmailAndPassword(usernameToEmail(username), pass);
+    closeAuthModal();
+    showToast("✅ Sesión iniciada. Sincronizando tu progreso…");
+  }catch(e){ showAuthError(authErrorMessage(e)); }
+}
+function authErrorMessage(e){
+  const code = e && e.code;
+  if(code==="auth/email-already-in-use") return "Ese nombre de usuario ya está en uso.";
+  if(code==="auth/invalid-email") return "Ese nombre de usuario no es válido.";
+  if(code==="auth/wrong-password"||code==="auth/invalid-credential") return "Usuario o contraseña incorrectos.";
+  if(code==="auth/user-not-found") return "No existe una cuenta con ese usuario.";
+  if(code==="auth/weak-password") return "La contraseña es muy débil (mínimo 6 caracteres).";
+  if(code==="auth/network-request-failed") return "Sin conexión a internet. Intenta de nuevo.";
+  return "Ocurrió un error. Intenta de nuevo.";
+}
+function logoutUser(){
+  if(cloudAuth) cloudAuth.signOut();
+  cloudStatus = "no-account";
+  showToast("Sesión cerrada. Tu progreso sigue guardado en este dispositivo.");
+  renderSidebar();
 }
 
 /* ---------- Contenido: Niveles y lecciones ---------- */
@@ -620,11 +850,13 @@ const defaultState = {
   editorSaved:"<!DOCTYPE html>\n<html>\n  <head><title>Mi proyecto libre</title></head>\n  <body>\n    <h1>¡Escribe lo que quieras aquí!</h1>\n  </body>\n</html>",
   chat:[],
   flags:{glossary:false, chat:false, freeEditor:false, downloaded:false, noHintSpot:false, perfectMCQ:false, diagnostic:false, fullscreen:false},
-  streak:{count:0, lastDate:null}
+  streak:{count:0, lastDate:null},
+  daily:{date:null, count:0, target:1, totalReached:0}
 };
 let state = loadState() || JSON.parse(JSON.stringify(defaultState));
 if(!state.flags) state.flags = JSON.parse(JSON.stringify(defaultState.flags));
 if(!state.streak) state.streak = JSON.parse(JSON.stringify(defaultState.streak));
+if(!state.daily) state.daily = JSON.parse(JSON.stringify(defaultState.daily));
 
 function updateStreak(){
   const today = new Date().toISOString().slice(0,10);
@@ -641,6 +873,47 @@ function updateStreak(){
 }
 function playerLevel(){ return Math.floor(state.xp/100)+1; }
 function xpIntoLevel(){ return state.xp%100; }
+
+/* ---------- Ligas (rangos de jugador según XP) ---------- */
+const LEAGUES = [
+  {id:"bronce",   name:"Bronce",   icon:"🥉", min:0,   grad:"linear-gradient(145deg,#CD9B5D,#8A6435)"},
+  {id:"plata",    name:"Plata",    icon:"🥈", min:150, grad:"linear-gradient(145deg,#C9D2DA,#78838F)"},
+  {id:"oro",      name:"Oro",      icon:"🥇", min:400, grad:"linear-gradient(145deg,#F0D264,#A9821A)"},
+  {id:"diamante", name:"Diamante", icon:"💎", min:800, grad:"linear-gradient(145deg,#8FE3F0,#1C8FA3)"},
+];
+function leagueForXP(xp){ let l=LEAGUES[0]; for(const lg of LEAGUES){ if(xp>=lg.min) l=lg; } return l; }
+function currentLeague(){ return leagueForXP(state.xp); }
+function nextLeague(){ const cur=currentLeague(); return LEAGUES[LEAGUES.indexOf(cur)+1] || null; }
+function leagueProgressPct(){
+  const cur=currentLeague(), nxt=nextLeague();
+  if(!nxt) return 100;
+  return Math.round(((state.xp-cur.min)/(nxt.min-cur.min))*100);
+}
+
+/* ---------- Meta diaria ---------- */
+function ensureDaily(){
+  const today = new Date().toISOString().slice(0,10);
+  if(state.daily.date !== today){ state.daily.date = today; state.daily.count = 0; }
+}
+function registerDailyProgress(){
+  ensureDaily();
+  state.daily.count += 1;
+  if(state.daily.count === state.daily.target){
+    state.daily.totalReached = (state.daily.totalReached||0) + 1;
+    awardXP(10);
+    return true;
+  }
+  return false;
+}
+
+/* ---------- Dificultad de lecciones (calculada según su posición en el nivel) ---------- */
+function lessonDifficulty(lvl, idx){
+  const ratio = (idx+1)/lvl.lessons.length;
+  if(ratio<=0.4) return {label:"Fácil", color:"green"};
+  if(ratio<=0.75) return {label:"Media", color:"gold"};
+  return {label:"Difícil", color:"coral"};
+}
+const HARD_LESSON_IDS = LEVELS.flatMap(lvl=>lvl.lessons.filter((l,idx)=>lessonDifficulty(lvl,idx).label==="Difícil").map(l=>l.id));
 
 const RARITY_COLOR = {bronce:"#B08D57", plata:"#9AA5B1", oro:"#D4AF37"};
 const BADGES = [
@@ -664,6 +937,12 @@ const BADGES = [
   {id:"racha_dias5", name:"Hábito de programador", desc:"Entra en la app 5 días distintos seguidos.", cond:s=>s.streak.count>=5, icon:"🗓️", rarity:"oro"},
   {id:"diagnostico", name:"Autoconocimiento", desc:"Completa el diagnóstico inicial.", cond:s=>s.flags.diagnostic, icon:"🧩", rarity:"bronce"},
   {id:"pantalla_completa", name:"Modo inmersivo", desc:"Usa la vista previa en pantalla completa.", cond:s=>s.flags.fullscreen, icon:"⛶", rarity:"bronce"},
+  {id:"liga_plata", name:"Liga Plata", desc:"Alcanza la liga Plata (150 XP).", cond:s=>leagueForXP(s.xp).id!=="bronce", icon:"🥈", rarity:"plata"},
+  {id:"liga_oro", name:"Liga Oro", desc:"Alcanza la liga Oro (400 XP).", cond:s=>["oro","diamante"].includes(leagueForXP(s.xp).id), icon:"🥇", rarity:"oro"},
+  {id:"liga_diamante", name:"Liga Diamante", desc:"Alcanza la liga Diamante (800 XP), el rango más alto.", cond:s=>leagueForXP(s.xp).id==="diamante", icon:"💎", rarity:"oro"},
+  {id:"meta_diaria1", name:"Meta cumplida", desc:"Completa tu meta diaria por primera vez.", cond:s=>(s.daily&&s.daily.totalReached||0)>=1, icon:"🎯", rarity:"bronce"},
+  {id:"meta_diaria10", name:"Disciplina de programador", desc:"Cumple la meta diaria 10 veces.", cond:s=>(s.daily&&s.daily.totalReached||0)>=10, icon:"📆", rarity:"oro"},
+  {id:"reto_dificil", name:"Reto superado", desc:"Completa una lección marcada como Difícil.", cond:s=>Object.keys(s.completedLessons).some(id=>HARD_LESSON_IDS.includes(id)), icon:"🥵", rarity:"plata"},
 ];
 function levelComplete(s, levelId){
   const lvl = LEVELS.find(l=>l.id===levelId);
@@ -685,17 +964,24 @@ function checkBadges(){
   return newly;
 }
 function completeLesson(lessonId){
-  if(!state.completedLessons[lessonId]){
-    state.completedLessons[lessonId]=true;
-    const prevLevel = playerLevel();
-    awardXP(15);
-    const leveledUp = playerLevel() > prevLevel;
-    const nb = checkBadges();
-    saveState();
-    if(leveledUp) showLevelUp(playerLevel());
-    if(nb.length){ nb.forEach((b,i)=> setTimeout(()=>showBadgePopup(b), leveledUp ? 900+i*1600 : i*1600)); }
-    else if(!leveledUp){ showToast("✨ +15 XP — ¡Lección completada!"); }
-  }
+  if(state.completedLessons[lessonId]){ renderSidebar(); return; }
+  state.completedLessons[lessonId]=true;
+  const prevLevel = playerLevel();
+  const prevLeague = currentLeague();
+  awardXP(15);
+  const dailyReached = registerDailyProgress();
+  const leveledUp = playerLevel() > prevLevel;
+  const league = currentLeague();
+  const leagueUp = league.id !== prevLeague.id;
+  const nb = checkBadges();
+  saveState();
+  const queue = [];
+  if(leveledUp) queue.push(()=>showLevelUp(playerLevel()));
+  if(leagueUp) queue.push(()=>showLeagueUp(league));
+  if(dailyReached) queue.push(()=>showDailyGoalPopup());
+  nb.forEach(b=> queue.push(()=>showBadgePopup(b)));
+  if(queue.length){ queue.forEach((fn,i)=> setTimeout(fn, i*1700)); }
+  else{ showToast("✨ +15 XP — ¡Lección completada!"); }
   renderSidebar();
 }
 
@@ -759,7 +1045,36 @@ function showLevelUp(level){
   document.body.appendChild(overlay);
   setTimeout(()=>{ if(overlay.parentNode) overlay.remove(); }, 3600);
 }
+function showLeagueUp(league){
+  confettiBurst();
+  const overlay = document.createElement("div");
+  overlay.className="badge-overlay";
+  overlay.innerHTML = `<div class="badge-popup league-popup" style="background:${league.grad};border-color:transparent;">
+    <div class="badge-popup-label" style="color:rgba(255,255,255,.85);">¡Nueva liga!</div>
+    <div class="badge-popup-icon">${league.icon}</div>
+    <div class="badge-popup-name" style="color:#fff;">Liga ${league.name}</div>
+    <div class="badge-popup-desc" style="color:rgba(255,255,255,.85);">Subiste de rango por tu experiencia acumulada. ¡Vas muy bien!</div>
+    <button class="btn btn-sm" style="background:#fff;color:var(--ink);" onclick="this.closest('.badge-overlay').remove()">¡Vamos!</button>
+  </div>`;
+  document.body.appendChild(overlay);
+  setTimeout(()=>{ if(overlay.parentNode) overlay.remove(); }, 3600);
+}
+function showDailyGoalPopup(){
+  confettiBurst();
+  const overlay = document.createElement("div");
+  overlay.className="badge-overlay";
+  overlay.innerHTML = `<div class="badge-popup rarity-plata">
+    <div class="badge-popup-label">Meta diaria</div>
+    <div class="badge-popup-icon">🎯</div>
+    <div class="badge-popup-name">¡Meta de hoy cumplida!</div>
+    <div class="badge-popup-desc">+10 XP extra por completar tu meta diaria. Vuelve mañana para seguir tu racha.</div>
+    <button class="btn btn-primary btn-sm" onclick="this.closest('.badge-overlay').remove()">¡Genial!</button>
+  </div>`;
+  document.body.appendChild(overlay);
+  setTimeout(()=>{ if(overlay.parentNode) overlay.remove(); }, 3600);
+}
 function esc(html){ return html; } // el contenido ya viene pre-formateado con entidades donde corresponde
+
 
 function go(page, opts){
   state.page = page;
@@ -771,22 +1086,42 @@ function go(page, opts){
 
 /* ---------- Sidebar ---------- */
 function renderSidebar(){
+  ensureDaily();
   const el = document.getElementById("sidebar");
   const pct = Math.round((completedCount()/totalLessons())*100);
   const lvl_ = playerLevel();
+  const league = currentLeague();
+  const nxt = nextLeague();
+  const dailyPct = Math.min(100, Math.round((state.daily.count/state.daily.target)*100));
+  const dailyDone = state.daily.count >= state.daily.target;
   let html = `<div class="brand">‹Aprende<span>HTML</span>/&gt;</div>
   <div class="brand-sub">Tu profesor particular de programación</div>
   <div class="hud">
     <div class="hud-row">
-      <div class="hud-avatar">${lvl_}</div>
-      <div class="hud-stats">Nivel de jugador<br><b>${xpIntoLevel()}/100 XP</b></div>
+      <div class="hud-avatar" style="background:${league.grad};font-size:17px;" title="Liga ${league.name}">${league.icon}</div>
+      <div class="hud-stats">Liga <b style="color:#fff;">${league.name}</b> · Nivel ${lvl_}<br><b>${xpIntoLevel()}/100 XP</b></div>
     </div>
     <div class="xp-bar-track"><div class="xp-bar-fill" style="width:${xpIntoLevel()}%"></div></div>
+    <div class="league-next">${nxt ? `${leagueProgressPct()}% para liga ${nxt.name} ${nxt.icon}` : `🏆 ¡Liga máxima alcanzada!`}</div>
     <div class="hud-mini" style="margin-top:9px;">
       <span>🔥 ${state.streak.count||0} día${(state.streak.count||0)===1?'':'s'}</span>
       <span>🏅 ${Object.keys(state.badges).length}/${BADGES.length}</span>
       <span>📈 ${pct}%</span>
     </div>
+    <div class="daily-goal-row">
+      <span>🎯 Meta de hoy</span>
+      <span>${Math.min(state.daily.count,state.daily.target)}/${state.daily.target} ${dailyDone?'✅':''}</span>
+    </div>
+    <div class="xp-bar-track daily-bar"><div class="xp-bar-fill daily-fill" style="width:${dailyPct}%"></div></div>
+  </div>
+  <div class="account-hud">
+    ${currentUser
+      ? `<div class="account-row"><span class="account-name">👤 ${currentUser.displayName||'Cuenta'}</span><span class="account-status status-${cloudStatus}">${accountStatusLabel()}</span></div>
+         <button class="account-btn" onclick="logoutUser()">🔓 Cerrar sesión</button>`
+      : CLOUD_ENABLED
+        ? `<button class="account-btn" onclick="openAuthModal('login')">☁️ Guardar progreso en la nube</button>`
+        : ``
+    }
   </div>
   <button class="nav-item ${state.page==='home'?'active':''}" onclick="go('home')">🗺️ Mapa de niveles</button>
   <button class="nav-item ${state.page==='dashboard'?'active':''}" onclick="go('dashboard')">🏆 Logros</button>
@@ -869,26 +1204,32 @@ function renderHome(){
     <h3>🗺️ Mapa de niveles</h3>
     <p class="lead" style="margin-bottom:0;">Avanza por el camino. Completa un nivel para ganar sus estrellas y desbloquear su insignia.</p>
     <div class="level-map"><div class="level-map-path">
-    ${LEVELS.map((lvl,idx)=>{
-      const done = lvl.lessons.filter(l=>state.completedLessons[l.id]).length;
-      const pctL = done/lvl.lessons.length;
-      const stars = pctL>=1?3:pctL>0.5?2:pctL>0?1:0;
-      const prevDone = idx===0 || LEVELS[idx-1].lessons.every(l=>state.completedLessons[l.id]);
-      const locked = !prevDone && done===0;
-      const nodeBg = {green:"linear-gradient(145deg,#48A672,#1F4E36)",blue:"linear-gradient(145deg,#5E7BEA,#1D2E80)",gold:"linear-gradient(145deg,#E3B94A,#8A6A11)",coral:"linear-gradient(145deg,#F07A55,#9A3418)"}[lvl.color];
-      return `<div class="map-node-row">
-        <div class="map-node ${locked?'locked':''}" style="background:${nodeBg};" onclick="${locked?'':`go('level',{levelId:'${lvl.id}'})`}">
-          ${locked?'🔒':lvl.icon}
-          ${!locked?`<span class="map-node-lock">${done===lvl.lessons.length?'✅':(idx+1)}</span>`:''}
-        </div>
-        <div class="map-node-info">
-          <div class="map-node-title">${lvl.title}</div>
-          <div class="map-node-sub">${lvl.desc}</div>
-          <div class="map-stars">${[0,1,2].map(i=>`<span class="${i<stars?'on':'off'}">★</span>`).join("")} <span style="color:var(--ink-soft);font-size:11px;">(${done}/${lvl.lessons.length} lecciones)</span></div>
-        </div>
-        <button class="btn ${locked?'btn-ghost':'btn-primary'} btn-sm" ${locked?'disabled':''} onclick="go('level',{levelId:'${lvl.id}'})">${locked?'Bloqueado':done>0?'Continuar':'Jugar'}</button>
-      </div>`;
-    }).join("")}
+    ${(()=>{
+      let nextUpAssigned=false;
+      return LEVELS.map((lvl,idx)=>{
+        const done = lvl.lessons.filter(l=>state.completedLessons[l.id]).length;
+        const pctL = done/lvl.lessons.length;
+        const stars = pctL>=1?3:pctL>0.5?2:pctL>0?1:0;
+        const prevDone = idx===0 || LEVELS[idx-1].lessons.every(l=>state.completedLessons[l.id]);
+        const locked = !prevDone && done===0;
+        const isNextUp = !locked && pctL<1 && !nextUpAssigned;
+        if(isNextUp) nextUpAssigned = true;
+        const nodeBg = {green:"linear-gradient(145deg,#48A672,#1F4E36)",blue:"linear-gradient(145deg,#5E7BEA,#1D2E80)",gold:"linear-gradient(145deg,#E3B94A,#8A6A11)",coral:"linear-gradient(145deg,#F07A55,#9A3418)"}[lvl.color];
+        const zig = idx%3===1?"zig1":idx%3===2?"zig2":"";
+        return `<div class="map-node-row ${zig}" style="--i:${idx};">
+          <div class="map-node ${locked?'locked':''} ${isNextUp?'next-up':''}" style="background:${nodeBg};" onclick="${locked?'':`go('level',{levelId:'${lvl.id}'})`}">
+            ${locked?'🔒':lvl.icon}
+            ${!locked?`<span class="map-node-lock">${done===lvl.lessons.length?'✅':(idx+1)}</span>`:''}
+          </div>
+          <div class="map-node-info">
+            <div class="map-node-title">${lvl.title} ${isNextUp?'<span class="next-up-tag">SIGUIENTE</span>':''}</div>
+            <div class="map-node-sub">${lvl.desc}</div>
+            <div class="map-stars">${[0,1,2].map(i=>`<span class="${i<stars?'on':'off'}">★</span>`).join("")} <span style="color:var(--ink-soft);font-size:11px;">(${done}/${lvl.lessons.length} lecciones)</span></div>
+          </div>
+          <button class="btn ${locked?'btn-ghost':'btn-primary'} btn-sm" ${locked?'disabled':''} onclick="go('level',{levelId:'${lvl.id}'})">${locked?'Bloqueado':done>0?'Continuar':'Jugar'}</button>
+        </div>`;
+      }).join("");
+    })()}
     </div></div>
     <p style="font-size:12.5px;color:var(--ink-soft);margin-top:10px;">Esta primera versión desarrolla a fondo los niveles 0 a 3 (fundamentos → estructura → texto → enlaces). La arquitectura ya está lista para seguir agregando imágenes, listas, tablas, formularios, HTML semántico y accesibilidad.</p>
   </div>`;
@@ -965,10 +1306,11 @@ function renderLevel(){
   <div class="mini-bar-track" style="max-width:300px;margin:14px 0;"><div class="mini-bar-fill" style="width:${(done/lvl.lessons.length)*100}%"></div></div>
   ${lvl.lessons.map((les,idx)=>{
     const isDone = !!state.completedLessons[les.id];
+    const diff = lessonDifficulty(lvl, idx);
     return `<div class="card level-card lc-${lvl.color}" style="display:flex;align-items:center;gap:16px;">
       <div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--ink-soft);width:24px;">${isDone?'✅':(idx+1)}</div>
       <div style="flex:1;">
-        <h3 style="margin-bottom:2px;">${les.title}</h3>
+        <h3 style="margin-bottom:2px;">${les.title} <span class="diff-chip diff-${diff.color}">${diff.label}</span></h3>
       </div>
       <button class="btn ${isDone?'btn-ghost':'btn-primary'} btn-sm" onclick="go('lesson',{levelId:'${lvl.id}',lessonIndex:${idx}})">${isDone?'Repasar':'Comenzar'}</button>
     </div>`;
@@ -981,8 +1323,9 @@ function renderLesson(){
   const lvl = LEVELS.find(l=>l.id===state.levelId);
   const les = lvl.lessons[state.lessonIndex];
   const isDone = !!state.completedLessons[les.id];
+  const diff = lessonDifficulty(lvl, state.lessonIndex);
   let html = `<span class="eyebrow eyebrow-${lvl.color}">${lvl.icon} &lt;${lvl.tag}&gt; · Lección ${state.lessonIndex+1} de ${lvl.lessons.length}</span>
-  <h1>${les.title}</h1>
+  <h1>${les.title} <span class="diff-chip diff-${diff.color}">${diff.label}</span></h1>
   <div class="card">
     <div class="step-label">1 · Explicación</div>
     ${les.explain}
@@ -1141,6 +1484,10 @@ function nextLesson(){
 function renderDashboard(){
   const pct = Math.round((completedCount()/totalLessons())*100);
   const earned = Object.keys(state.badges).length;
+  const league = currentLeague();
+  const nxt = nextLeague();
+  const dailyPct = Math.min(100, Math.round((state.daily.count/state.daily.target)*100));
+  const dailyDone = state.daily.count >= state.daily.target;
   return `<span class="eyebrow">🏆 SALA DE TROFEOS</span>
   <h1>Panel del jugador</h1>
   <div class="stat-row">
@@ -1148,6 +1495,28 @@ function renderDashboard(){
     <div class="stat-box"><div class="num">${state.xp}</div><div class="lbl">puntos XP</div></div>
     <div class="stat-box"><div class="num">${completedCount()}/${totalLessons()}</div><div class="lbl">lecciones completadas</div></div>
     <div class="stat-box"><div class="num">🔥 ${state.streak.count||0}</div><div class="lbl">racha de días</div></div>
+  </div>
+  <div class="card">
+    <h3>${league.icon} Liga ${league.name}</h3>
+    <p class="lead" style="margin-bottom:16px;">${nxt ? `Te faltan <b>${nxt.min - state.xp}</b> XP para subir a la liga ${nxt.name} ${nxt.icon}.` : `Llegaste a la liga más alta. ¡Sigue sumando XP e insignias!`}</p>
+    <div class="league-track">
+      ${LEAGUES.map((lg,i)=>{
+        const reached = state.xp >= lg.min;
+        const isCurrent = lg.id===league.id;
+        const lineFilled = i<LEAGUES.length-1 && state.xp>=LEAGUES[i+1].min;
+        return `<div class="league-step ${reached?'reached':''} ${isCurrent?'current':''}">
+          <div class="league-step-icon" style="background:${reached?lg.grad:'var(--line)'};">${lg.icon}</div>
+          <div class="league-step-name">${lg.name}</div>
+          <div class="league-step-xp">${lg.min} XP</div>
+        </div>${i<LEAGUES.length-1?`<div class="league-step-line ${lineFilled?'filled':''}"></div>`:''}`;
+      }).join("")}
+    </div>
+  </div>
+  <div class="card">
+    <h3>🎯 Meta diaria</h3>
+    <p class="lead" style="margin-bottom:10px;">${dailyDone?'¡Ya cumpliste la meta de hoy! Vuelve mañana para seguir sumando.':`Completa ${state.daily.target} lección(es) hoy y gana +10 XP extra.`}</p>
+    <div class="mini-bar-track" style="max-width:280px;"><div class="mini-bar-fill" style="width:${dailyPct}%;background:linear-gradient(90deg,#F2D27E,#E4572E);"></div></div>
+    <div style="font-size:12.5px;color:var(--ink-soft);margin-top:6px;">${Math.min(state.daily.count,state.daily.target)}/${state.daily.target} hoy · cumplida ${state.daily.totalReached||0} vez/veces en total</div>
   </div>
   <div class="card">
     <h3>Avance por nivel</h3>
@@ -1311,6 +1680,7 @@ function debounce(fn, ms){ let t; return (...a)=>{ clearTimeout(t); t=setTimeout
 
 /* ---------- Init ---------- */
 updateStreak();
+ensureDaily();
 render();
 </script>
 </body>
