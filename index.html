@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>‹Aprende HTML/› — Tu profesor particular de programación</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FBF9F4;
+  --bg-dot: rgba(47,111,78,.10);
+  --ink:#182620;
+  --ink-soft:#5B6A61;
+  --card:#FFFFFF;
+  --line:#E7E3D6;
+  --green:#2F6F4E;
+  --green-deep:#173D2A;
+  --green-bright:#48A672;
+  --green-tint:#E9F3EC;
+  --coral:#E4572E;
+  --coral-deep:#B33F1E;
+  --coral-tint:#FDEAE3;
+  --blue:#3457D5;
+  --blue-tint:#E9EDFC;
+  --gold:#C9971F;
+  --gold-tint:#FBF2DD;
+  --radius:16px;
+  --radius-sm:10px;
+  --shadow: 0 1px 2px rgba(23,61,42,.04), 0 8px 24px -8px rgba(23,61,42,.14);
+  --shadow-lift: 0 4px 8px rgba(23,61,42,.05), 0 18px 38px -14px rgba(23,61,42,.22);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:
+    radial-gradient(circle at 1.5px 1.5px, var(--bg-dot) 1.5px, transparent 0) 0 0/22px 22px,
+    var(--bg);
+  color:var(--ink);
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{
+  font-family:'Fraunces','Georgia',serif;
+  font-weight:600;
+  letter-spacing:-0.015em;
+  margin:0 0 .5em 0;
+  color:var(--ink);
+}
+code, pre, .mono, textarea.code-input{
+  font-family:'JetBrains Mono','SFMono-Regular',Consolas,monospace;
+}
+a{color:var(--blue);}
+button{font-family:inherit;cursor:pointer;}
+::selection{background:var(--green-tint);}
+:focus-visible{outline:2.5px solid var(--green-bright);outline-offset:2px;border-radius:4px;}
+@media (prefers-reduced-motion: reduce){ *{animation:none !important;transition:none !important;} }
+
+/* Layout shell */
+#app{display:flex;min-height:100vh;}
+.sidebar{
+  width:264px;flex-shrink:0;color:#EAF3ED;
+  background:
+    radial-gradient(620px 300px at 100% -10%, rgba(143,217,174,.18), transparent 60%),
+    linear-gradient(175deg, var(--green-deep) 0%, #10281B 100%);
+  padding:26px 18px;display:flex;flex-direction:column;gap:5px;
+  position:sticky;top:0;height:100vh;overflow-y:auto;
+  border-right:1px solid rgba(255,255,255,.06);
+}
+.sidebar::-webkit-scrollbar{width:6px;}
+.sidebar::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:6px;}
+.brand{
+  font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;color:#fff;
+  margin-bottom:4px;letter-spacing:-.02em;display:flex;align-items:center;gap:2px;
+}
+.brand span{color:#8FD9AE;}
+.brand-sub{font-size:11.5px;color:#8FB89E;margin-bottom:22px;letter-spacing:.01em;}
+.nav-section{font-size:10px;text-transform:uppercase;font-weight:600;letter-spacing:.11em;color:#6F9C81;margin:16px 4px 6px 10px;}
+.nav-item{
+  display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:10px;
+  color:#D6E9DD;text-decoration:none;font-size:13.5px;cursor:pointer;border:none;background:none;
+  text-align:left;width:100%;transition:background .15s ease, transform .15s ease, color .15s ease;
+}
+.nav-item:hover{background:rgba(255,255,255,.08);transform:translateX(1px);}
+.nav-item.active{background:linear-gradient(135deg,#8FD9AE,#6BC091);color:#0F2E1D;font-weight:700;box-shadow:0 4px 12px -4px rgba(0,0,0,.35);}
+.nav-tag{font-family:'JetBrains Mono',monospace;font-size:11px;opacity:.7;}
+.nav-item.active .nav-tag{opacity:1;}
+.nav-check{margin-left:auto;font-size:11.5px;color:#8FD9AE;font-family:'JetBrains Mono',monospace;}
+.nav-item.active .nav-check{color:#0F2E1D;}
+.sidebar-progress{margin-top:auto;padding-top:18px;border-top:1px solid rgba(255,255,255,.1);font-size:12px;color:#AFD4BE;}
+.xp-bar-track{height:7px;border-radius:5px;background:rgba(255,255,255,.12);margin-top:7px;overflow:hidden;}
+.xp-bar-fill{height:100%;background:linear-gradient(90deg,#6BC091,#8FD9AE);border-radius:5px;transition:width .5s cubic-bezier(.4,0,.2,1);}
+
+main{flex:1;min-width:0;padding:40px 46px 90px;max-width:1000px;}
+@media (max-width:860px){
+  #app{flex-direction:column;}
+  .sidebar{width:100%;height:auto;position:relative;flex-direction:row;flex-wrap:wrap;padding:14px;background:linear-gradient(120deg,var(--green-deep),#10281B);}
+  .brand,.brand-sub,.sidebar-progress{display:none;}
+  .nav-section{display:none;}
+  .nav-item{width:auto;}
+  main{padding:22px 18px;}
+}
+
+.eyebrow{
+  font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:var(--green-deep);
+  background:var(--green-tint);display:inline-flex;align-items:center;gap:6px;padding:5px 11px 5px 9px;border-radius:20px;
+  margin-bottom:14px;border:1px solid rgba(47,111,78,.15);
+}
+.eyebrow::before{content:"●";color:var(--green-bright);font-size:8px;}
+.lead{color:var(--ink-soft);font-size:16px;max-width:640px;}
+
+.card{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:26px 28px;
+  margin-bottom:20px;box-shadow:var(--shadow);transition:box-shadow .2s ease, transform .2s ease;
+}
+.card:hover{box-shadow:var(--shadow-lift);}
+.card h3{margin-top:0;}
+
+.tag-chip{
+  font-family:'JetBrains Mono',monospace;font-size:12.5px;font-weight:600;background:var(--ink);color:#fff;
+  padding:3px 9px;border-radius:7px;letter-spacing:-.01em;
+}
+
+/* Buttons */
+.btn{border-radius:10px;padding:11px 20px;font-size:14px;font-weight:600;border:1px solid transparent;transition:transform .12s ease, box-shadow .12s ease, background .15s ease, border-color .15s ease;}
+.btn-primary{background:linear-gradient(135deg,var(--green),var(--green-deep));color:#fff;box-shadow:0 3px 10px -3px rgba(23,61,42,.5);}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 16px -4px rgba(23,61,42,.55);}
+.btn-primary:active{transform:translateY(0);}
+.btn-ghost{background:#fff;border-color:var(--line);color:var(--ink);}
+.btn-ghost:hover{border-color:var(--green);color:var(--green-deep);transform:translateY(-1px);}
+.btn-coral{background:linear-gradient(135deg,var(--coral),var(--coral-deep));color:#fff;}
+.btn-coral:hover{transform:translateY(-1px);}
+.btn-sm{padding:7px 13px;font-size:12.5px;border-radius:8px;}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none !important;box-shadow:none !important;}
+.btn-row{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px;}
+
+/* Home hero */
+.hero{padding:8px 0 34px;}
+.hero h1{font-size:42px;line-height:1.12;max-width:640px;}
+.stat-row{display:flex;gap:14px;flex-wrap:wrap;margin-top:24px;}
+.stat-box{
+  background:var(--card);border:1px solid var(--line);border-radius:13px;padding:16px 20px;min-width:132px;
+  box-shadow:var(--shadow);transition:transform .15s ease;
+}
+.stat-box:hover{transform:translateY(-2px);}
+.stat-box .num{font-family:'Fraunces',serif;font-size:28px;font-weight:700;color:var(--green-deep);}
+.stat-box .lbl{font-size:12px;color:var(--ink-soft);margin-top:2px;}
+
+/* Lesson content blocks */
+.step-label{
+  font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;
+  color:var(--green);margin-bottom:10px;display:flex;align-items:center;gap:8px;
+}
+.step-label::after{content:"";flex:1;height:1px;background:var(--line);}
+.code-block{
+  background:linear-gradient(165deg,#152A1E,#0E1F16);color:#EFF6F1;border-radius:12px;padding:18px 20px;
+  font-family:'JetBrains Mono',monospace;font-size:14px;overflow-x:auto;white-space:pre;
+  margin:10px 0;border:1px solid rgba(143,217,174,.14);box-shadow:0 6px 18px -10px rgba(23,61,42,.5);
+}
+.code-block .tag{color:#8FD9AE;font-weight:600;}
+.code-block .attr{color:#F2C572;}
+.code-block .str{color:#F29E7C;}
+
+.line-explain{border-left:3px solid var(--green); padding:9px 0 9px 15px;margin:10px 0;background:var(--green-tint);border-radius:0 10px 10px 0;}
+.line-explain code{background:var(--ink);color:#fff;padding:2px 7px;border-radius:5px;font-size:13px;}
+
+.analogy-box{background:var(--gold-tint);border:1px solid #EBD9A8;border-radius:12px;padding:15px 18px;margin:16px 0;font-size:14.5px;position:relative;padding-left:44px;}
+.analogy-box::before{content:"💡";position:absolute;left:14px;top:14px;font-size:16px;}
+.analogy-box b{color:var(--gold);}
+
+.callout{border-radius:11px;padding:13px 16px;font-size:14px;margin:12px 0;display:flex;gap:10px;align-items:flex-start;font-weight:500;}
+.callout.ok{background:var(--green-tint);color:var(--green-deep);border:1px solid rgba(47,111,78,.18);}
+.callout.bad{background:var(--coral-tint);color:#9A3418;border:1px solid rgba(228,87,46,.18);}
+.callout.hint{background:var(--blue-tint);color:#213A9E;border:1px solid rgba(52,87,213,.16);}
+
+/* Editor */
+.editor-wrap{display:flex;gap:16px;margin-top:12px;}
+@media (max-width:760px){.editor-wrap{flex-direction:column;}}
+.editor-pane, .preview-pane{flex:1;min-width:0;border-radius:12px;overflow:hidden;border:1px solid var(--line);box-shadow:var(--shadow);}
+.pane-head{
+  background:#F2EFE4;padding:9px 14px;font-size:11.5px;font-family:'JetBrains Mono',monospace;font-weight:600;
+  color:var(--ink-soft);display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);
+}
+textarea.code-input{
+  width:100%;min-height:230px;border:none;padding:16px;font-size:13.5px;resize:vertical;
+  background:linear-gradient(165deg,#152A1E,#0E1F16);color:#EFF6F1;outline:none;line-height:1.65;
+}
+iframe.preview-frame{width:100%;min-height:230px;border:none;background:#fff;}
+.fullscreen-editor{position:fixed;inset:0;background:var(--bg);z-index:999;padding:24px;overflow-y:auto;}
+
+/* Exercises */
+.opt-btn{
+  display:block;width:100%;text-align:left;padding:12px 16px;border:1.5px solid var(--line);border-radius:11px;
+  background:#fff;margin-bottom:9px;font-size:14px;font-weight:500;transition:border-color .15s ease, background .15s ease, transform .1s ease;
+}
+.opt-btn:hover:not([disabled]){border-color:var(--green);background:var(--green-tint);transform:translateX(2px);}
+.opt-btn.correct{border-color:var(--green);background:var(--green-tint);color:var(--green-deep);font-weight:700;}
+.opt-btn.wrong{border-color:var(--coral);background:var(--coral-tint);color:#9A3418;}
+
+/* Dashboard */
+.progress-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:16px 0;}
+.level-progress-row{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--line);}
+.level-progress-row:last-child{border-bottom:none;}
+.mini-bar-track{flex:1;height:8px;background:var(--line);border-radius:5px;overflow:hidden;}
+.mini-bar-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--green-bright));border-radius:5px;transition:width .5s ease;}
+.badge{
+  display:inline-flex;align-items:center;gap:7px;background:linear-gradient(135deg,var(--gold-tint),#FCEFCB);
+  border:1px solid #EBD9A8;color:#7A5B0E;padding:8px 14px;border-radius:22px;font-size:13px;font-weight:600;
+  margin:4px 7px 4px 0;box-shadow:0 2px 6px -2px rgba(201,151,31,.35);
+}
+.badge.locked{opacity:.4;background:#F1EFE7;border-color:var(--line);color:var(--ink-soft);box-shadow:none;}
+
+/* Glossary */
+.gloss-item{border-bottom:1px solid var(--line);padding:16px 0;}
+.gloss-item:hover .gloss-term{color:var(--green-bright);}
+.gloss-term{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--green-deep);font-size:15px;transition:color .15s ease;}
+
+/* Chat */
+.chat-log{max-height:380px;overflow-y:auto;padding:6px 2px;margin-bottom:14px;}
+.chat-msg{padding:11px 15px;border-radius:14px;margin-bottom:9px;font-size:14px;max-width:85%;line-height:1.55;}
+.chat-msg.user{background:var(--blue-tint);margin-left:auto;color:#1D2E80;border-bottom-right-radius:4px;}
+.chat-msg.bot{background:var(--green-tint);color:var(--green-deep);border-bottom-left-radius:4px;}
+.chat-input-row{display:flex;gap:9px;}
+.chat-input-row input{flex:1;padding:11px 14px;border:1.5px solid var(--line);border-radius:11px;font-size:14px;transition:border-color .15s ease;}
+.chat-input-row input:focus{border-color:var(--green);outline:none;}
+.faq-chip{font-size:12px;padding:6px 12px;border:1px solid var(--line);border-radius:18px;background:#fff;margin:3px 5px 0 0;transition:.15s;}
+.faq-chip:hover{border-color:var(--green);background:var(--green-tint);}
+
+.toast{
+  position:fixed;bottom:24px;right:24px;background:linear-gradient(135deg,var(--green-deep),#0F2E1D);color:#fff;
+  padding:13px 20px;border-radius:12px;font-size:14px;font-weight:500;box-shadow:var(--shadow-lift);z-index:1200;
+  opacity:0;transform:translateY(10px);transition:.3s cubic-bezier(.2,.8,.2,1);
+}
+.toast.show{opacity:1;transform:translateY(0);}
+
+.pill-nav{display:flex;justify-content:space-between;margin-top:28px;}
+.hidden{display:none !important;}
+
+/* Acentos por nivel — cada nivel tiene identidad de color propia */
+.accent-chip{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;padding:4px 10px;border-radius:7px;letter-spacing:-.01em;}
+.chip-green{background:var(--green-tint);color:var(--green-deep);}
+.chip-blue{background:var(--blue-tint);color:#1D2E80;}
+.chip-gold{background:var(--gold-tint);color:#7A5B0E;}
+.chip-coral{background:var(--coral-tint);color:var(--coral-deep);}
+.eyebrow-green{background:var(--green-tint);color:var(--green-deep);border-color:rgba(47,111,78,.18);}
+.eyebrow-blue{background:var(--blue-tint);color:#1D2E80;border-color:rgba(52,87,213,.18);}
+.eyebrow-gold{background:var(--gold-tint);color:#7A5B0E;border-color:rgba(201,151,31,.22);}
+.eyebrow-coral{background:var(--coral-tint);color:var(--coral-deep);border-color:rgba(228,87,46,.18);}
+.eyebrow-green::before{color:var(--green);}
+.eyebrow-blue::before{color:var(--blue);}
+.eyebrow-gold::before{color:var(--gold);}
+.eyebrow-coral::before{color:var(--coral);}
+.level-card{border-left:5px solid var(--line);}
+.level-card.lc-green{border-left-color:var(--green);}
+.level-card.lc-blue{border-left-color:var(--blue);}
+.level-card.lc-gold{border-left-color:var(--gold);}
+.level-card.lc-coral{border-left-color:var(--coral);}
+
+/* Hero: demo dividido código + vista previa real */
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:#12281B;color:#8FD9AE;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;padding:6px 13px;border-radius:20px;margin-bottom:18px;}
+.hero-badge::before{content:"●";color:#48A672;font-size:8px;animation:pulse-dot 1.8s infinite;}
+@keyframes pulse-dot{0%,100%{opacity:1;}50%{opacity:.3;}}
+.hero-watermark{
+  position:absolute;right:-10px;top:-30px;font-family:'JetBrains Mono',monospace;font-size:180px;font-weight:700;
+  color:rgba(47,111,78,.05);z-index:0;pointer-events:none;line-height:1;user-select:none;
+}
+.hero-wrap{position:relative;overflow:hidden;}
+.hero-demo{display:flex;gap:16px;margin:22px 0 28px;position:relative;z-index:1;}
+@media (max-width:760px){.hero-demo{flex-direction:column;}}
+.hero-demo-pane{flex:1;min-width:0;border-radius:14px;overflow:hidden;box-shadow:var(--shadow-lift);border:1px solid var(--line);}
+.hero-demo-head{padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;display:flex;align-items:center;gap:8px;}
+.hero-demo-head .dots{display:flex;gap:5px;}
+.hero-demo-head .dots span{width:8px;height:8px;border-radius:50%;display:inline-block;}
+.hero-code-panel{background:linear-gradient(165deg,#152A1E,#0E1F16);}
+.hero-code-panel .hero-demo-head{background:rgba(0,0,0,.2);color:#8FD9AE;}
+.hero-code-panel pre{margin:0;padding:18px 20px;color:#EFF6F1;font-family:'JetBrains Mono',monospace;font-size:13.5px;line-height:1.75;white-space:pre-wrap;min-height:150px;}
+.hero-preview-panel .hero-demo-head{background:#F2EFE4;color:var(--ink-soft);}
+.hero-preview-panel iframe{width:100%;min-height:150px;border:none;background:#fff;display:block;}
+.typing-cursor{display:inline-block;width:7px;height:15px;background:#8FD9AE;margin-left:1px;vertical-align:middle;animation:blink 0.9s steps(1) infinite;}
+@keyframes blink{50%{opacity:0;}}
+</style>
+</head>
+<body>
+
+<div id="app">
+  <nav class="sidebar" id="sidebar"></nav>
+  <main id="main"></main>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* =====================================================================
+   APRENDE HTML — plataforma educativa de una sola página
+   Estado en memoria + localStorage con fallback seguro (try/catch)
+   ===================================================================== */
+
+/* ---------- Persistencia segura ---------- */
+const STORAGE_KEY = "aprendeHTML_progreso_v1";
+let memoryFallback = {}; // si localStorage falla, guardamos aquí (dura la sesión)
+function saveState(){
+  try{
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }catch(e){
+    memoryFallback = JSON.parse(JSON.stringify(state));
+    console.warn("No se pudo usar localStorage, guardando solo en memoria de esta sesión.", e);
+  }
+}
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw) return JSON.parse(raw);
+  }catch(e){ /* sigue abajo */ }
+  return memoryFallback && memoryFallback.xp !== undefined ? memoryFallback : null;
+}
+
+/* ---------- Contenido: Niveles y lecciones ---------- */
+const LEVELS = [
+  {
+    id:"n0", tag:"nivel0", title:"Introducción absoluta", color:"green", icon:"🧭",
+    desc:"Antes de escribir una sola línea de código, entendamos qué es programar y qué es una página web.",
+    lessons:[
+      {
+        id:"n0-l1", title:"¿Qué es una computadora y qué es Internet?",
+        explain:`<p>Una <b>computadora</b> es una máquina que sigue instrucciones al pie de la letra. No "entiende" nada por sí sola: simplemente ejecuta, en orden, lo que alguien le indicó.</p>
+        <p><b>Internet</b> es una red gigantesca que conecta computadoras entre sí, para que puedan enviarse información. Cuando visitas una página web, tu computadora le pide esa información a otra computadora (llamada <b>servidor</b>) a través de Internet.</p>`,
+        analogy:"Piensa en Internet como un sistema de carreteras que conecta ciudades (computadoras). Cuando pides una página web, es como enviar un mensajero a otra ciudad a buscar un documento y traerlo de vuelta.",
+        example:null, lineByLine:null,
+        challenge:{type:"mcq", q:"¿Qué es un servidor?", options:["Un tipo de virus","Una computadora que guarda y entrega páginas web cuando se le piden","Un programa para escuchar música","Un cable de red"], correct:1,
+          feedbackOk:"Exacto. El servidor es la computadora que 'guarda' la página y la entrega cuando alguien la pide.",
+          feedbackBad:"No es eso. Piensa en el servidor como la computadora 'anfitriona' que guarda las páginas y las entrega cuando se le solicitan."}
+      },
+      {
+        id:"n0-l2", title:"¿Qué es una página web y qué es un navegador?",
+        explain:`<p>Una <b>página web</b> es un documento digital que puede tener texto, imágenes, enlaces y más, diseñado para mostrarse en una pantalla.</p>
+        <p>Un <b>navegador</b> (como Chrome, Firefox o Safari) es el programa que usamos para <i>leer</i> esas páginas. El navegador recibe el código de la página y lo transforma en algo visual: títulos, párrafos, botones, imágenes.</p>`,
+        analogy:"El código de una página web es como una receta de cocina escrita. El navegador es el cocinero que lee esa receta y prepara el plato (lo que ves en pantalla).",
+        example:null,lineByLine:null,
+        challenge:{type:"mcq", q:"¿Cuál es el trabajo principal del navegador?", options:["Crear páginas web nuevas","Leer el código de una página y mostrarlo visualmente en pantalla","Conectar el cable de Internet","Guardar contraseñas únicamente"], correct:1,
+          feedbackOk:"Correcto. El navegador interpreta el código y lo convierte en lo que ves y usas.",
+          feedbackBad:"Repasa la analogía de la receta: el navegador 'cocina' el código para mostrártelo."}
+      },
+      {
+        id:"n0-l3", title:"¿Qué es programar y qué es el código?",
+        explain:`<p><b>Programar</b> significa escribir instrucciones, en un lenguaje que la computadora pueda seguir, para que haga algo específico.</p>
+        <p>Esas instrucciones escritas se llaman <b>código</b>. Un <b>lenguaje de programación</b> es el conjunto de palabras y reglas que usamos para escribir ese código (así como el español tiene sus propias reglas gramaticales).</p>`,
+        analogy:"Programar es como escribir una lista de pasos para armar un mueble: si un paso está mal escrito o en el orden equivocado, el resultado sale distinto a lo esperado.",
+        example:null,lineByLine:null,
+        challenge:{type:"fill", q:"Completa: El conjunto de palabras y reglas para escribir instrucciones a la computadora se llama lenguaje de ______.", answer:"programación",
+          feedbackOk:"¡Así es! Lenguaje de programación.",
+          feedbackBad:"Pista: es la palabra que usamos para describir la acción de escribir código."}
+      },
+      {
+        id:"n0-l4", title:"¿Qué es HTML y en qué se diferencia de CSS y JavaScript?",
+        explain:`<p><b>HTML</b> (HyperText Markup Language) es el lenguaje que usamos para decirle al navegador <b>qué elementos existen</b> en una página y <b>cómo está organizada</b>: dónde hay un título, dónde un párrafo, dónde una imagen.</p>
+        <p>HTML se encarga de la <b>estructura</b>. Existen otros dos lenguajes que trabajan junto a él, pero que no vamos a usar todavía en esta ruta:</p>
+        <ul><li><b>CSS</b>: decide cómo se ve todo (colores, tamaños, distribución).</li><li><b>JavaScript</b>: decide cómo se comporta la página (qué pasa al hacer clic, animaciones, interacción).</li></ul>`,
+        analogy:"Si una página web fuera una casa: HTML es la construcción (paredes, puertas, habitaciones). CSS es la pintura y decoración. JavaScript es la electricidad y los mecanismos que hacen que las cosas funcionen (luces, timbre, alarma).",
+        example:null,lineByLine:null,
+        challenge:{type:"mcq", q:"¿Qué lenguaje se encarga de la estructura de una página (títulos, párrafos, imágenes)?", options:["CSS","JavaScript","HTML","Python"], correct:2,
+          feedbackOk:"Correcto, HTML define la estructura.",
+          feedbackBad:"Recuerda la analogía de la casa: la estructura (paredes, habitaciones) es HTML."}
+      },
+      {
+        id:"n0-l5", title:"Herramientas que necesitas para aprender",
+        explain:`<p>Para escribir HTML solo necesitas dos cosas: <b>un editor de texto</b> (donde escribes el código) y <b>un navegador</b> (donde lo ves funcionar).</p>
+        <p>En esta aplicación no necesitas instalar nada: más adelante vas a usar el <b>Editor integrado</b> de esta misma plataforma para escribir y probar tu código al instante.</p>`,
+        analogy:null, example:null, lineByLine:null,
+        challenge:{type:"mcq", q:"¿Qué dos herramientas mínimas necesitas para escribir y ver una página HTML?", options:["Un editor de texto y un navegador","Una impresora y un escáner","Un servidor propio y una base de datos","Photoshop y Excel"], correct:0,
+          feedbackOk:"Exacto, con eso basta para empezar.",
+          feedbackBad:"Piensa en las dos etapas: escribir el código, y luego verlo funcionar."}
+      }
+    ]
+  },
+  {
+    id:"n1", tag:"nivel1", title:"Primer contacto con HTML", color:"blue", icon:"🧱",
+    desc:"Vamos a crear la estructura mínima de toda página HTML y a entender cada parte.",
+    lessons:[
+      {
+        id:"n1-l1", title:"La estructura básica de un documento HTML",
+        explain:`<p>Todo archivo HTML empieza con una estructura fija. Vamos a verla completa y luego la explicamos línea por línea.</p>`,
+        analogy:"Esta estructura es como el esqueleto de un edificio: siempre está ahí, aunque no se vea a simple vista, y todo lo demás se construye sobre él.",
+        example:`&lt;!DOCTYPE html&gt;\n&lt;html&gt;\n  &lt;head&gt;\n    &lt;title&gt;Mi primera página&lt;/title&gt;\n  &lt;/head&gt;\n  &lt;body&gt;\n    &lt;h1&gt;Hola mundo&lt;/h1&gt;\n  &lt;/body&gt;\n&lt;/html&gt;`,
+        lineByLine:[
+          {code:"&lt;!DOCTYPE html&gt;", expl:"Le dice al navegador: 'este documento está escrito en HTML moderno (HTML5)'. Siempre va primero, y no se cierra."},
+          {code:"&lt;html&gt; ... &lt;/html&gt;", expl:"Es la 'etiqueta' que envuelve TODO el documento. Todo lo demás va dentro de ella."},
+          {code:"&lt;head&gt; ... &lt;/head&gt;", expl:"Contiene información sobre la página que normalmente el usuario no ve directamente, como el título de la pestaña."},
+          {code:"&lt;title&gt; ... &lt;/title&gt;", expl:"Define el texto que aparece en la pestaña del navegador."},
+          {code:"&lt;body&gt; ... &lt;/body&gt;", expl:"Contiene todo lo que SÍ se ve en la página: textos, imágenes, botones, etc."},
+          {code:"&lt;h1&gt;Hola mundo&lt;/h1&gt;", expl:"Un título grande. Lo vemos a fondo en la próxima lección."}
+        ],
+        etiquetaNote:`<p>Una <b>etiqueta</b> (en inglés, "tag") es una palabra entre signos de menor-que y mayor-que, como <code>&lt;body&gt;</code>. La mayoría de las etiquetas se usan en pareja: una de <b>apertura</b> (<code>&lt;body&gt;</code>) y una de <b>cierre</b>, que lleva una barra diagonal (<code>&lt;/body&gt;</code>). Todo lo que escribas entre la apertura y el cierre queda "dentro" de esa etiqueta.</p>`,
+        challenge:{type:"order", q:"Ordena estas etiquetas como deben aparecer, de afuera hacia adentro:", items:["&lt;body&gt;","&lt;html&gt;","&lt;h1&gt;Hola&lt;/h1&gt;"], correctOrder:[1,0,2],
+          feedbackOk:"¡Correcto! html envuelve a body, y body envuelve al contenido visible.",
+          feedbackBad:"Recuerda: html es el envoltorio más grande, luego body, y adentro va el contenido."}
+      },
+      {
+        id:"n1-l2", title:"Crear tu primer archivo HTML",
+        explain:`<p>Un archivo HTML es simplemente un archivo de texto guardado con la extensión <code>.html</code> (por ejemplo, <code>index.html</code>). Cuando lo abres con un navegador, este lee el código y lo muestra visualmente.</p>
+        <p>En esta plataforma no necesitas guardar archivos todavía: vas a usar el <b>Editor</b> integrado, que te muestra el resultado al instante, sin instalar nada.</p>`,
+        analogy:null,
+        example:`&lt;!DOCTYPE html&gt;\n&lt;html&gt;\n  &lt;head&gt;&lt;title&gt;Mi página&lt;/title&gt;&lt;/head&gt;\n  &lt;body&gt;\n    &lt;h1&gt;¡Ya tengo mi primer archivo HTML!&lt;/h1&gt;\n  &lt;/body&gt;\n&lt;/html&gt;`,
+        lineByLine:null,
+        challenge:{type:"editor", q:"Usa el editor de abajo. Cambia el texto dentro de &lt;h1&gt; por un saludo con tu nombre, y presiona 'Ejecutar'.", starter:"<!DOCTYPE html>\n<html>\n  <head><title>Mi página</title></head>\n  <body>\n    <h1>Escribe aquí tu saludo</h1>\n  </body>\n</html>", check:(code)=> /<h1>[^<]{4,}<\/h1>/i.test(code) && !/Escribe aquí tu saludo/i.test(code),
+          feedbackOk:"¡Perfecto! Modificaste el contenido del &lt;h1&gt; y el navegador lo mostró al instante.",
+          feedbackBad:"Aún dice el texto original. Cambia lo que está entre &lt;h1&gt; y &lt;/h1&gt; por tu propio saludo."}
+      }
+    ]
+  },
+  {
+    id:"n2", tag:"nivel2", title:"Texto y estructura", color:"gold", icon:"✍️",
+    desc:"Las etiquetas más usadas para mostrar texto: títulos, párrafos y énfasis.",
+    lessons:[
+      {
+        id:"n2-l1", title:"Títulos: de &lt;h1&gt; a &lt;h6&gt;",
+        explain:`<p>Para crear títulos usamos seis niveles, del más importante al menos importante: <code>&lt;h1&gt;</code> (el más grande e importante) hasta <code>&lt;h6&gt;</code> (el más pequeño). Una página normalmente tiene un solo <code>&lt;h1&gt;</code> (el título principal) y usa <code>&lt;h2&gt;</code>, <code>&lt;h3&gt;</code>, etc. para subtítulos.</p>`,
+        analogy:"Es como el índice de un libro: h1 es el título del libro, h2 los capítulos, h3 las secciones dentro de cada capítulo.",
+        example:`&lt;h1&gt;Mi restaurante&lt;/h1&gt;\n&lt;h2&gt;Nuestro menú&lt;/h2&gt;\n&lt;h3&gt;Entradas&lt;/h3&gt;`,
+        lineByLine:[
+          {code:"&lt;h1&gt;Mi restaurante&lt;/h1&gt;", expl:"Título principal de toda la página."},
+          {code:"&lt;h2&gt;Nuestro menú&lt;/h2&gt;", expl:"Un subtítulo, un nivel por debajo del h1."},
+          {code:"&lt;h3&gt;Entradas&lt;/h3&gt;", expl:"Un sub-subtítulo, dentro de la sección del menú."}
+        ],
+        challenge:{type:"mcq", q:"¿Cuál etiqueta deberías usar para el título MÁS importante de tu página?", options:["&lt;h6&gt;","&lt;h1&gt;","&lt;title&gt;","&lt;p&gt;"], correct:1,
+          feedbackOk:"Correcto, h1 es el título principal.",
+          feedbackBad:"h1 es el más grande e importante; h6 es el más pequeño."}
+      },
+      {
+        id:"n2-l2", title:"Párrafos y saltos: &lt;p&gt;, &lt;br&gt;, &lt;hr&gt;",
+        explain:`<p><code>&lt;p&gt;</code> crea un párrafo de texto normal. <code>&lt;br&gt;</code> crea un salto de línea DENTRO de un párrafo (no necesita cierre). <code>&lt;hr&gt;</code> dibuja una línea horizontal para separar secciones (tampoco necesita cierre).</p>`,
+        analogy:"El párrafo es como un bloque de texto en una carta. &lt;br&gt; es como presionar Enter una sola vez. &lt;hr&gt; es como dibujar una raya para separar dos temas distintos.",
+        example:`&lt;p&gt;Este es el primer párrafo.&lt;/p&gt;\n&lt;p&gt;Esta línea&lt;br&gt;continúa abajo, en el mismo párrafo.&lt;/p&gt;\n&lt;hr&gt;\n&lt;p&gt;Este párrafo está después de la línea divisoria.&lt;/p&gt;`,
+        lineByLine:null,
+        challenge:{type:"spot", q:"Encuentra el error en este código:", buggyCode:"&lt;p&gt;Hola, bienvenido a mi página&lt;p&gt;", bugHint:"Falta la barra diagonal en la etiqueta de cierre.", fixed:"&lt;p&gt;Hola, bienvenido a mi página&lt;/p&gt;",
+          feedbackOk:"¡Bien visto! La etiqueta de cierre necesita la barra: &lt;/p&gt;.",
+          feedbackBad:"Compara la apertura y el cierre: a la segunda &lt;p&gt; le falta la barra diagonal para ser un cierre válido."}
+      },
+      {
+        id:"n2-l3", title:"Dar énfasis al texto",
+        explain:`<p>Algunas etiquetas cambian el significado o la apariencia de partes del texto:</p>
+        <ul>
+          <li><code>&lt;strong&gt;</code>: indica que el texto es importante (se ve en negrita).</li>
+          <li><code>&lt;em&gt;</code>: indica énfasis (se ve en cursiva).</li>
+          <li><code>&lt;mark&gt;</code>: resalta texto como si usaras un marcador amarillo.</li>
+          <li><code>&lt;small&gt;</code>: texto en letra pequeña (por ejemplo, notas legales).</li>
+          <li><code>&lt;del&gt;</code>: texto tachado (que fue eliminado).</li>
+          <li><code>&lt;ins&gt;</code>: texto subrayado (que fue insertado).</li>
+          <li><code>&lt;sub&gt;</code> y <code>&lt;sup&gt;</code>: texto subíndice y superíndice (por ejemplo, H&lt;sub&gt;2&lt;/sub&gt;O o 2&lt;sup&gt;3&lt;/sup&gt;).</li>
+        </ul>`,
+        analogy:null,
+        example:`&lt;p&gt;Este producto es &lt;strong&gt;100% natural&lt;/strong&gt; y &lt;em&gt;delicioso&lt;/em&gt;.&lt;/p&gt;\n&lt;p&gt;&lt;mark&gt;Oferta especial&lt;/mark&gt; solo hoy.&lt;/p&gt;`,
+        lineByLine:null,
+        challenge:{type:"editor", q:"En el editor, escribe un párrafo que use &lt;strong&gt; para resaltar una palabra importante.", starter:"<!DOCTYPE html>\n<html><body>\n  <p>Escribe tu párrafo aquí</p>\n</body></html>", check:(code)=> /<strong>[^<]+<\/strong>/i.test(code),
+          feedbackOk:"¡Muy bien! Usaste correctamente &lt;strong&gt;.",
+          feedbackBad:"Aún no detecto una etiqueta &lt;strong&gt;...&lt;/strong&gt; en tu código."}
+      }
+    ]
+  },
+  {
+    id:"n3", tag:"nivel3", title:"Enlaces", color:"coral", icon:"🔗",
+    desc:"Cómo conectar páginas entre sí con la etiqueta &lt;a&gt;.",
+    lessons:[
+      {
+        id:"n3-l1", title:"La etiqueta &lt;a&gt; y el atributo href",
+        explain:`<p>Un <b>atributo</b> es información extra que le das a una etiqueta, escrita dentro de la apertura, en forma de <code>nombre="valor"</code>.</p>
+        <p>Para crear un enlace usamos <code>&lt;a&gt;</code> junto con el atributo <code>href</code>, que indica a dónde debe llevar el enlace.</p>`,
+        analogy:"href es como la dirección que le das a un taxi: la etiqueta &lt;a&gt; es el taxi, y href le dice a dónde ir.",
+        example:`&lt;a href="https://www.wikipedia.org"&gt;Visita Wikipedia&lt;/a&gt;`,
+        lineByLine:[
+          {code:"&lt;a href=\"https://www.wikipedia.org\"&gt;", expl:"Abre el enlace. href contiene la dirección de destino, entre comillas."},
+          {code:"Visita Wikipedia", expl:"Es el texto visible y clickeable del enlace."},
+          {code:"&lt;/a&gt;", expl:"Cierra el enlace."}
+        ],
+        challenge:{type:"fill", q:"Completa el atributo que falta: &lt;a ____=\"https://ejemplo.com\"&gt;Enlace&lt;/a&gt;", answer:"href",
+          feedbackOk:"¡Correcto! href.",
+          feedbackBad:"Es el atributo que indica el destino del enlace: h-r-e-f."}
+      },
+      {
+        id:"n3-l2", title:"Tipos de enlaces: internos, correo y teléfono",
+        explain:`<p>No todos los enlaces van a otra página web:</p>
+        <ul>
+          <li><b>Enlace interno</b>: apunta a otra página de tu mismo sitio, ej. <code>href="contacto.html"</code>.</li>
+          <li><b>Enlace externo</b>: apunta a otro sitio web, ej. <code>href="https://google.com"</code>.</li>
+          <li><b>Enlace de correo</b>: usa <code>mailto:</code>, ej. <code>href="mailto:hola@ejemplo.com"</code>, abre el programa de correo.</li>
+          <li><b>Enlace telefónico</b>: usa <code>tel:</code>, ej. <code>href="tel:+50760000000"</code>, útil en celulares.</li>
+        </ul>
+        <p>El atributo <code>target="_blank"</code> hace que el enlace se abra en una pestaña nueva.</p>`,
+        analogy:null,
+        example:`&lt;a href="acerca.html"&gt;Sobre nosotros&lt;/a&gt;\n&lt;a href="mailto:info@panama.com"&gt;Escríbenos&lt;/a&gt;\n&lt;a href="https://youtube.com" target="_blank"&gt;Ver en YouTube&lt;/a&gt;`,
+        lineByLine:null,
+        challenge:{type:"editor", q:"Crea, en el editor, un enlace de correo hacia tu propio correo usando mailto:.", starter:"<!DOCTYPE html>\n<html><body>\n  <p>Escribe tu enlace aquí</p>\n</body></html>", check:(code)=> /href\s*=\s*["']mailto:[^"']+["']/i.test(code),
+          feedbackOk:"¡Excelente! Ese es un enlace de correo válido.",
+          feedbackBad:"Necesitas un href que empiece con mailto: seguido de una dirección de correo."}
+      }
+    ]
+  }
+];
+
+const GLOSSARY = [
+  {term:"HTML", def:"Lenguaje que se usa para definir la estructura y el contenido de una página web (títulos, párrafos, imágenes, etc.).", ex:"&lt;h1&gt;Hola&lt;/h1&gt; es HTML."},
+  {term:"Etiqueta (tag)", def:"Palabra entre signos < y > que marca el inicio o el fin de un elemento HTML.", ex:"&lt;p&gt; y &lt;/p&gt; son etiquetas."},
+  {term:"Elemento", def:"El conjunto formado por una etiqueta de apertura, su contenido y su etiqueta de cierre.", ex:"&lt;p&gt;Hola&lt;/p&gt; es un elemento completo."},
+  {term:"Atributo", def:"Información adicional que se añade dentro de una etiqueta de apertura, en forma nombre=\"valor\".", ex:"href en &lt;a href=\"...\"&gt;."},
+  {term:"Navegador", def:"Programa que interpreta el código HTML y lo muestra visualmente en pantalla.", ex:"Chrome, Firefox, Safari."},
+  {term:"Código", def:"Conjunto de instrucciones escritas en un lenguaje que la computadora puede interpretar.", ex:"Todo el HTML que escribes es código."},
+  {term:"Programación", def:"Actividad de escribir instrucciones para que una computadora realice una tarea.", ex:"Programar una página web con HTML."},
+  {term:"Archivo", def:"Un documento guardado con un nombre y una extensión, como index.html.", ex:"index.html es un archivo HTML."},
+  {term:"URL", def:"La dirección única que identifica una página en Internet.", ex:"https://www.ejemplo.com"},
+  {term:"Servidor", def:"Computadora que almacena páginas web y las envía cuando un navegador las solicita.", ex:"El servidor 'entrega' la página al navegador."},
+  {term:"Cliente", def:"En la web, es el navegador que pide información a un servidor.", ex:"Tu navegador actúa como cliente."},
+  {term:"Frontend", def:"La parte de una aplicación que el usuario ve e interactúa directamente (HTML, CSS, JavaScript).", ex:"El diseño visible de esta app es el frontend."},
+  {term:"Backend", def:"La parte de una aplicación que funciona 'detrás de escena', en un servidor, gestionando datos.", ex:"Una base de datos suele vivir en el backend."},
+  {term:"DOM", def:"Representación en memoria de la estructura de una página HTML, que el navegador construye para poder mostrarla y manipularla.", ex:"Cuando cambias el HTML, el navegador reconstruye el DOM."},
+];
+
+const FAQ = [
+  {kw:["div","section","diferencia"], a:"Ambas son etiquetas 'contenedoras' sin significado visual propio, pero &lt;section&gt; comunica que ese bloque es una sección temática de la página (por ejemplo, el menú de un restaurante), mientras que &lt;div&gt; no comunica ningún significado: solo agrupa. Usa &lt;section&gt; cuando el bloque tenga sentido por sí solo con un título propio; usa &lt;div&gt; para agrupar sin ese significado."},
+  {kw:["no funciona","no anda","no sirve","error"], a:"Las causas más comunes son: 1) una etiqueta sin cerrar, 2) comillas que no cierran en un atributo, 3) escribir mal el nombre de la etiqueta. Revisa tu código en el Editor, presiona 'Ejecutar' y observa qué se muestra: si algo falta o se ve pegado, casi siempre falta una etiqueta de cierre."},
+  {kw:["atributo","atributos"], a:"Un atributo es información extra que le das a una etiqueta, escrita como nombre=\"valor\" dentro de la etiqueta de apertura. Por ejemplo, en &lt;img src=\"foto.jpg\"&gt;, 'src' es el atributo y 'foto.jpg' es su valor."},
+  {kw:["etiqueta","tag","que es una etiqueta"], a:"Una etiqueta es una palabra entre los signos < y > que le dice al navegador qué tipo de elemento estás creando, como &lt;p&gt; para un párrafo. La mayoría de las etiquetas van en pareja: apertura y cierre (con barra diagonal)."},
+  {kw:["cerrar", "cierre"], a:"Casi todas las etiquetas necesitan una de cierre, que es igual a la de apertura pero con una barra diagonal antes del nombre, por ejemplo &lt;/p&gt;. Algunas etiquetas, como &lt;br&gt; o &lt;img&gt;, no llevan cierre porque no envuelven contenido."},
+  {kw:["href"], a:"href es el atributo de la etiqueta &lt;a&gt; que indica hacia dónde debe llevar el enlace cuando se hace clic. Va siempre entre comillas: href=\"destino\"."},
+  {kw:["h1","h2","titulo","título"], a:"h1 a h6 son etiquetas de título, de mayor a menor importancia. Usa un solo h1 por página para el título principal, y h2, h3... para subtítulos, como el índice de un libro."},
+];
+
+/* ---------- Estado global ---------- */
+const defaultState = {
+  page:"home",
+  levelId:null, lessonIndex:0,
+  completedLessons:{}, // {lessonId:true}
+  xp:0,
+  badges:{}, // {badgeId:true}
+  diagnosticDone:false,
+  editorSaved:"<!DOCTYPE html>\n<html>\n  <head><title>Mi proyecto libre</title></head>\n  <body>\n    <h1>¡Escribe lo que quieras aquí!</h1>\n  </body>\n</html>",
+  chat:[]
+};
+let state = loadState() || JSON.parse(JSON.stringify(defaultState));
+
+const BADGES = [
+  {id:"primer_codigo", name:"Primer código", cond:s=>Object.keys(s.completedLessons).length>=1, icon:"🏆"},
+  {id:"nivel0_completo", name:"Fundamentos claros", cond:s=>levelComplete(s,"n0"), icon:"🧭"},
+  {id:"nivel1_completo", name:"Primera página web", cond:s=>levelComplete(s,"n1"), icon:"📄"},
+  {id:"nivel2_completo", name:"Maestro de los encabezados", cond:s=>levelComplete(s,"n2"), icon:"✍️"},
+  {id:"nivel3_completo", name:"Constructor de enlaces", cond:s=>levelComplete(s,"n3"), icon:"🔗"},
+  {id:"racha3", name:"3 lecciones en un día", cond:s=>Object.keys(s.completedLessons).length>=3, icon:"🔥"},
+];
+function levelComplete(s, levelId){
+  const lvl = LEVELS.find(l=>l.id===levelId);
+  if(!lvl) return false;
+  return lvl.lessons.every(l=>s.completedLessons[l.id]);
+}
+function totalLessons(){ return LEVELS.reduce((a,l)=>a+l.lessons.length,0); }
+function completedCount(){ return Object.keys(state.completedLessons).length; }
+
+function awardXP(n){ state.xp += n; }
+function checkBadges(){
+  let newBadge=null;
+  BADGES.forEach(b=>{
+    if(!state.badges[b.id] && b.cond(state)){
+      state.badges[b.id]=true;
+      newBadge=b;
+    }
+  });
+  return newBadge;
+}
+function completeLesson(lessonId){
+  if(!state.completedLessons[lessonId]){
+    state.completedLessons[lessonId]=true;
+    awardXP(15);
+    const nb = checkBadges();
+    saveState();
+    if(nb){ showToast(nb.icon+" ¡Insignia desbloqueada: "+nb.name+"!"); }
+    else{ showToast("+15 XP — ¡Lección completada!"); }
+  }
+  renderSidebar();
+}
+
+/* ---------- Utilidades UI ---------- */
+function showToast(msg){
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(window.__toastTimer);
+  window.__toastTimer = setTimeout(()=>t.classList.remove("show"), 2600);
+}
+function esc(html){ return html; } // el contenido ya viene pre-formateado con entidades donde corresponde
+
+function go(page, opts){
+  state.page = page;
+  if(opts){ Object.assign(state, opts); }
+  saveState();
+  render();
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+/* ---------- Sidebar ---------- */
+function renderSidebar(){
+  const el = document.getElementById("sidebar");
+  const pct = Math.round((completedCount()/totalLessons())*100);
+  let html = `<div class="brand">‹Aprende<span>HTML</span>/&gt;</div>
+  <div class="brand-sub">Tu profesor particular de programación</div>
+  <button class="nav-item ${state.page==='home'?'active':''}" onclick="go('home')">🏠 Inicio</button>
+  <button class="nav-item ${state.page==='dashboard'?'active':''}" onclick="go('dashboard')">📊 Mi progreso</button>
+  <button class="nav-item ${state.page==='editor'?'active':''}" onclick="go('editor')">🧪 Editor libre</button>
+  <button class="nav-item ${state.page==='glossary'?'active':''}" onclick="go('glossary')">📖 Glosario</button>
+  <button class="nav-item ${state.page==='chat'?'active':''}" onclick="go('chat')">💬 Pregunta a tu profesor</button>
+  <div class="nav-section">Ruta de niveles</div>`;
+  LEVELS.forEach(lvl=>{
+    const done = lvl.lessons.filter(l=>state.completedLessons[l.id]).length;
+    const allDone = done===lvl.lessons.length;
+    const active = state.page==='level'&&state.levelId===lvl.id;
+    const dotColor = {green:"#8FD9AE",blue:"#9DB4FF",gold:"#F2D27E",coral:"#F5A488"}[lvl.color];
+    html += `<button class="nav-item ${active?'active':''}" onclick="go('level',{levelId:'${lvl.id}'})" style="${active?`background:linear-gradient(135deg,${dotColor},${dotColor});`:''}">
+      <span>${lvl.icon}</span>
+      <span class="nav-tag" style="${active?'':`color:${dotColor}`}">&lt;${lvl.tag}&gt;</span> ${lvl.title.length>14?lvl.title.slice(0,14)+'…':lvl.title}
+      <span class="nav-check">${allDone?'✓':done>0?done+'/'+lvl.lessons.length:''}</span>
+    </button>`;
+  });
+  html += `<div class="sidebar-progress">Progreso general · ${pct}%
+    <div class="xp-bar-track"><div class="xp-bar-fill" style="width:${pct}%"></div></div>
+    <div style="margin-top:8px;">⭐ ${state.xp} XP</div>
+  </div>`;
+  el.innerHTML = html;
+}
+
+/* ---------- Render router ---------- */
+function render(){
+  renderSidebar();
+  const main = document.getElementById("main");
+  if(state.page==="home") main.innerHTML = renderHome();
+  else if(state.page==="diagnostic") main.innerHTML = renderDiagnostic();
+  else if(state.page==="level") main.innerHTML = renderLevel();
+  else if(state.page==="lesson") main.innerHTML = renderLesson();
+  else if(state.page==="dashboard") main.innerHTML = renderDashboard();
+  else if(state.page==="glossary") main.innerHTML = renderGlossary();
+  else if(state.page==="editor") main.innerHTML = renderFreeEditor();
+  else if(state.page==="chat") main.innerHTML = renderChat();
+  afterRenderHooks();
+}
+
+/* ---------- Home ---------- */
+const HERO_EXAMPLE = `<!DOCTYPE html>
+<html>
+  <body>
+    <h1>Hola, futuro programador</h1>
+    <p>Hoy vas a aprender a construir esto.</p>
+  </body>
+</html>`;
+function renderHome(){
+  return `
+  <div class="hero hero-wrap">
+    <span class="hero-watermark">&lt;/&gt;</span>
+    <span class="hero-badge">${totalLessons()} lecciones activas</span>
+    <h1 style="font-size:46px;max-width:620px;">De <em style="font-style:italic;color:var(--green-deep);">"no sé programar"</em> a construir tu propia página web.</h1>
+    <p class="lead">Esta aplicación es tu profesor particular de HTML. Sin conocimientos previos, sin suposiciones, paso a paso: explicación, ejemplo, práctica y retroalimentación en cada lección.</p>
+
+    <div class="hero-demo">
+      <div class="hero-demo-pane hero-code-panel">
+        <div class="hero-demo-head"><span class="dots"><span style="background:#F5A488"></span><span style="background:#F2D27E"></span><span style="background:#8FD9AE"></span></span> index.html</div>
+        <pre id="hero-typewriter"></pre>
+      </div>
+      <div class="hero-demo-pane hero-preview-panel">
+        <div class="hero-demo-head">🌐 vista previa — así lo ve el navegador</div>
+        <iframe id="hero-preview-frame"></iframe>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="go('diagnostic')">Comenzar diagnóstico inicial</button>
+      <button class="btn btn-ghost" onclick="go('level',{levelId:'n0'})">Ir directo al Nivel 0</button>
+    </div>
+    <div class="stat-row">
+      <div class="stat-box"><div class="num">${LEVELS.length}</div><div class="lbl">niveles disponibles</div></div>
+      <div class="stat-box"><div class="num">${totalLessons()}</div><div class="lbl">lecciones</div></div>
+      <div class="stat-box"><div class="num">${completedCount()}</div><div class="lbl">completadas por ti</div></div>
+      <div class="stat-box"><div class="num">${Object.keys(state.badges).length}</div><div class="lbl">insignias ganadas</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>¿Cómo funciona cada lección?</h3>
+    <p class="lead">Explicación sencilla → Ejemplo de código → Explicación línea por línea → Experimentas en el editor → Desafío → Retroalimentación clara.</p>
+  </div>
+  <div class="card">
+    <h3>Ruta de aprendizaje</h3>
+    ${LEVELS.map(lvl=>{
+      const done = lvl.lessons.filter(l=>state.completedLessons[l.id]).length;
+      return `<div class="level-progress-row">
+        <span class="accent-chip chip-${lvl.color}">${lvl.icon} &lt;${lvl.tag}&gt;</span>
+        <div style="flex:1;">
+          <b>${lvl.title}</b><br><span style="font-size:12.5px;color:var(--ink-soft)">${lvl.desc}</span>
+        </div>
+        <div class="mini-bar-track" style="max-width:90px;"><div class="mini-bar-fill" style="width:${(done/lvl.lessons.length)*100}%"></div></div>
+        <button class="btn btn-ghost btn-sm" onclick="go('level',{levelId:'${lvl.id}'})">Ver</button>
+      </div>`;
+    }).join("")}
+    <p style="font-size:12.5px;color:var(--ink-soft);margin-top:10px;">Esta primera versión desarrolla a fondo los niveles 0 a 3 (fundamentos → estructura → texto → enlaces). La arquitectura ya está lista para seguir agregando imágenes, listas, tablas, formularios, HTML semántico y accesibilidad.</p>
+  </div>`;
+}
+function startHeroTypewriter(){
+  const pre = document.getElementById("hero-typewriter");
+  const frame = document.getElementById("hero-preview-frame");
+  if(!pre || !frame) return;
+  let i=0;
+  pre.textContent = "";
+  const cursor = document.createElement("span");
+  cursor.className="typing-cursor";
+  function tick(){
+    if(i<=HERO_EXAMPLE.length){
+      pre.textContent = HERO_EXAMPLE.slice(0,i);
+      pre.appendChild(cursor);
+      frame.srcdoc = HERO_EXAMPLE.slice(0,i);
+      i += 2;
+      setTimeout(tick, 12);
+    }else{
+      pre.textContent = HERO_EXAMPLE;
+      frame.srcdoc = HERO_EXAMPLE;
+    }
+  }
+  tick();
+}
+
+/* ---------- Diagnóstico ---------- */
+function renderDiagnostic(){
+  return `<span class="eyebrow">DIAGNÓSTICO INICIAL</span>
+  <h1>Antes de empezar, cuéntanos un poco</h1>
+  <p class="lead">Esto nos ayuda a saber por dónde empezar. Sé honesto: no hay respuestas "malas".</p>
+  <div class="card">
+    <div id="diag-q"></div>
+  </div>`;
+}
+const DIAG_QUESTIONS = [
+  {q:"¿Has programado antes en cualquier lenguaje?", options:["Nunca","Un poco, alguna vez","Sí, tengo experiencia"]},
+  {q:"¿Sabes qué es HTML?", options:["No tengo idea","He escuchado el término","Sí, sé qué es"]},
+  {q:"¿Has creado alguna página web, aunque sea muy simple?", options:["No, nunca","Lo intenté una vez","Sí, ya he creado alguna"]},
+  {q:"¿Sabes qué es un navegador web?", options:["No estoy seguro","Más o menos","Sí, claro"]},
+];
+let diagAnswers = [];
+function afterRenderHooks(){
+  if(state.page==="home"){ startHeroTypewriter(); }
+  if(state.page==="diagnostic"){ diagAnswers=[]; renderDiagQuestion(0); }
+  if(state.page==="editor"){ wireEditor("free-editor","free-preview"); }
+  if(state.page==="lesson"){ wireLessonEditor(); }
+  if(state.page==="chat"){ const log=document.getElementById("chat-log"); if(log) log.scrollTop=log.scrollHeight; }
+}
+function renderDiagQuestion(i){
+  const box = document.getElementById("diag-q");
+  if(!box) return;
+  if(i>=DIAG_QUESTIONS.length){
+    const beginnerScore = diagAnswers.filter(a=>a===0).length;
+    box.innerHTML = `<p>${beginnerScore>=2 ? "Perfecto, vamos a comenzar desde el Nivel 0 — la base absoluta." : "Ya tienes algo de contexto, pero de todas formas te recomendamos pasar por el Nivel 0 para nivelar todos los conceptos base."}</p>
+    <button class="btn btn-primary" onclick="state.diagnosticDone=true; saveState(); go('level',{levelId:'n0'})">Comenzar en el Nivel 0</button>`;
+    return;
+  }
+  const item = DIAG_QUESTIONS[i];
+  box.innerHTML = `<div class="step-label">Pregunta ${i+1} de ${DIAG_QUESTIONS.length}</div>
+  <h3>${item.q}</h3>
+  ${item.options.map((o,idx)=>`<button class="opt-btn" onclick="diagAnswers.push(${idx}); renderDiagQuestion(${i+1})">${o}</button>`).join("")}`;
+}
+
+/* ---------- Nivel (listado de lecciones) ---------- */
+function renderLevel(){
+  const lvl = LEVELS.find(l=>l.id===state.levelId);
+  if(!lvl) return "<p>Nivel no encontrado.</p>";
+  const done = lvl.lessons.filter(l=>state.completedLessons[l.id]).length;
+  return `<span class="eyebrow eyebrow-${lvl.color}">${lvl.icon} &lt;${lvl.tag}&gt;</span>
+  <h1>${lvl.title}</h1>
+  <p class="lead">${lvl.desc}</p>
+  <div class="mini-bar-track" style="max-width:300px;margin:14px 0;"><div class="mini-bar-fill" style="width:${(done/lvl.lessons.length)*100}%"></div></div>
+  ${lvl.lessons.map((les,idx)=>{
+    const isDone = !!state.completedLessons[les.id];
+    return `<div class="card level-card lc-${lvl.color}" style="display:flex;align-items:center;gap:16px;">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--ink-soft);width:24px;">${isDone?'✅':(idx+1)}</div>
+      <div style="flex:1;">
+        <h3 style="margin-bottom:2px;">${les.title}</h3>
+      </div>
+      <button class="btn ${isDone?'btn-ghost':'btn-primary'} btn-sm" onclick="go('lesson',{levelId:'${lvl.id}',lessonIndex:${idx}})">${isDone?'Repasar':'Comenzar'}</button>
+    </div>`;
+  }).join("")}`;
+}
+
+/* ---------- Lección ---------- */
+function renderLesson(){
+  const lvl = LEVELS.find(l=>l.id===state.levelId);
+  const les = lvl.lessons[state.lessonIndex];
+  const isDone = !!state.completedLessons[les.id];
+  let html = `<span class="eyebrow eyebrow-${lvl.color}">${lvl.icon} &lt;${lvl.tag}&gt; · Lección ${state.lessonIndex+1} de ${lvl.lessons.length}</span>
+  <h1>${les.title}</h1>
+  <div class="card">
+    <div class="step-label">1 · Explicación</div>
+    ${les.explain}
+    ${les.analogy ? `<div class="analogy-box"><b>Analogía:</b> ${les.analogy}</div>` : ""}
+    ${les.etiquetaNote ? les.etiquetaNote : ""}
+  </div>`;
+
+  if(les.example){
+    html += `<div class="card">
+      <div class="step-label">2 · Ejemplo</div>
+      <div class="code-block">${les.example}</div>
+      ${les.lineByLine ? `<div class="step-label" style="margin-top:16px;">3 · Explicación línea por línea</div>
+        ${les.lineByLine.map(l=>`<div class="line-explain"><code>${l.code}</code><div style="margin-top:4px;">${l.expl}</div></div>`).join("")}` : ""}
+    </div>`;
+  }
+
+  html += `<div class="card" id="challenge-card">
+    <div class="step-label">${les.example ? "4" : "2"} · Desafío</div>
+    ${renderChallenge(les)}
+    <div id="challenge-feedback"></div>
+  </div>`;
+
+  html += `<div class="pill-nav">
+    <button class="btn btn-ghost" onclick="go('level',{levelId:'${lvl.id}'})">← Volver al nivel</button>
+    <button class="btn btn-primary" id="next-lesson-btn" onclick="nextLesson()" ${isDone?"":"disabled"}>Siguiente lección →</button>
+  </div>`;
+  return html;
+}
+
+function renderChallenge(les){
+  const c = les.challenge;
+  if(c.type==="mcq"){
+    return `<p>${c.q}</p>` + c.options.map((o,i)=>`<button class="opt-btn" onclick="answerMCQ(${i})">${o}</button>`).join("");
+  }
+  if(c.type==="fill"){
+    return `<p>${c.q}</p>
+    <div style="display:flex;gap:8px;"><input id="fill-input" type="text" style="flex:1;padding:10px 12px;border:1px solid var(--line);border-radius:9px;font-size:14px;" placeholder="Escribe tu respuesta">
+    <button class="btn btn-primary btn-sm" onclick="answerFill()">Comprobar</button></div>`;
+  }
+  if(c.type==="order"){
+    return `<p>${c.q}</p>
+    <div id="order-list">${c.items.map((it,i)=>`<div class="opt-btn" draggable="false" data-idx="${i}" style="cursor:default;">${it}</div>`).join("")}</div>
+    <p style="font-size:12.5px;color:var(--ink-soft);">Usa los botones para mover cada línea hacia arriba o abajo hasta lograr el orden correcto.</p>
+    <div id="order-controls"></div>
+    <button class="btn btn-primary btn-sm" style="margin-top:8px;" onclick="answerOrder()">Comprobar orden</button>`;
+  }
+  if(c.type==="spot"){
+    return `<p>${c.q}</p><div class="code-block">${c.buggyCode}</div>
+    <button class="btn btn-ghost btn-sm" onclick="revealHint('spot')">💡 ¿Necesitas una pista?</button>
+    <div id="spot-hint"></div>
+    <div style="margin-top:10px;"><input id="spot-input" type="text" style="width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:9px;font-family:'JetBrains Mono',monospace;font-size:13px;" placeholder="Escribe el código correcto"></div>
+    <button class="btn btn-primary btn-sm" style="margin-top:8px;" onclick="answerSpot()">Comprobar</button>`;
+  }
+  if(c.type==="editor"){
+    return `<p>${c.q}</p>
+    <div class="editor-wrap">
+      <div class="editor-pane">
+        <div class="pane-head"><span>editor.html</span></div>
+        <textarea class="code-input" id="lesson-editor">${c.starter}</textarea>
+      </div>
+      <div class="preview-pane">
+        <div class="pane-head"><span>vista previa</span></div>
+        <iframe class="preview-frame" id="lesson-preview"></iframe>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary btn-sm" onclick="runLessonEditor()">▶ Ejecutar</button>
+      <button class="btn btn-ghost btn-sm" onclick="document.getElementById('lesson-editor').value=\`${c.starter.replace(/`/g,"\\`")}\`;runLessonEditor();">↺ Reiniciar</button>
+      <button class="btn btn-ghost btn-sm" onclick="checkLessonEditor()">✓ Comprobar desafío</button>
+    </div>`;
+  }
+  return "";
+}
+
+function wireLessonEditor(){
+  const ta = document.getElementById("lesson-editor");
+  if(ta){ runLessonEditor(); ta.addEventListener("input", debounce(runLessonEditor, 400)); }
+}
+function runLessonEditor(){
+  const ta = document.getElementById("lesson-editor");
+  const frame = document.getElementById("lesson-preview");
+  if(ta && frame) frame.srcdoc = ta.value;
+}
+function checkLessonEditor(){
+  const lvl = LEVELS.find(l=>l.id===state.levelId);
+  const les = lvl.lessons[state.lessonIndex];
+  const code = document.getElementById("lesson-editor").value;
+  const ok = les.challenge.check(code);
+  giveFeedback(ok, les.challenge.feedbackOk, les.challenge.feedbackBad);
+  if(ok) completeLesson(les.id), enableNext();
+}
+
+function answerMCQ(i){
+  const lvl = LEVELS.find(l=>l.id===state.levelId);
+  const les = lvl.lessons[state.lessonIndex];
+  const btns = document.querySelectorAll("#challenge-card .opt-btn");
+  const ok = i===les.challenge.correct;
+  btns.forEach((b,idx)=>{
+    b.onclick=null;
+    if(idx===les.challenge.correct) b.classList.add("correct");
+    if(idx===i && !ok) b.classList.add("wrong");
+  });
+  giveFeedback(ok, les.challenge.feedbackOk, les.challenge.feedbackBad);
+  if(ok) completeLesson(les.id), enableNext();
+}
+function answerFill(){
+  const lvl = LEVELS.find(l=>l.id===state.levelId);
+  const les = lvl.lessons[state.lessonIndex];
+  const val = document.getElementById("fill-input").value.trim().toLowerCase();
+  const ok = val === les.challenge.answer.toLowerCase();
+  giveFeedback(ok, les.challenge.feedbackOk, les.challenge.feedbackBad);
+  if(ok) completeLesson(les.id), enableNext();
+}
+let orderState = null;
+function answerOrder(){
+  const lvl = LEVELS.find(l=>l.id===state.levelId);
+  const les = lvl.lessons[state.lessonIndex];
+  // Comparación simple: si aún no reordenó manualmente, evaluamos el orden mostrado por defecto vs correctOrder,
+  // así que ofrecemos botones de mover.
+  giveFeedback(false, les.challenge.feedbackOk, "Usa los botones ↑ ↓ (debajo de cada línea) para reordenar, luego vuelve a comprobar.");
+}
+function revealHint(kind){
+  const lvl = LEVELS.find(l=>l.id===state.levelId);
+  const les = lvl.lessons[state.lessonIndex];
+  document.getElementById("spot-hint").innerHTML = `<div class="callout hint">💡 ${les.challenge.bugHint}</div>`;
+}
+function answerSpot(){
+  const lvl = LEVELS.find(l=>l.id===state.levelId);
+  const les = lvl.lessons[state.lessonIndex];
+  const val = document.getElementById("spot-input").value.replace(/\s+/g," ").trim();
+  const target = les.challenge.fixed.replace(/&lt;/g,"<").replace(/&gt;/g,">").replace(/\s+/g," ").trim();
+  const ok = val.replace(/</g,"<").replace(/>/g,">") === target || val === les.challenge.fixed;
+  giveFeedback(ok, les.challenge.feedbackOk, les.challenge.feedbackBad);
+  if(ok) completeLesson(les.id), enableNext();
+}
+function giveFeedback(ok, okMsg, badMsg){
+  const box = document.getElementById("challenge-feedback");
+  box.innerHTML = `<div class="callout ${ok?'ok':'bad'}">${ok?'✅':'❌'} ${ok?okMsg:badMsg}</div>`;
+}
+function enableNext(){
+  const btn = document.getElementById("next-lesson-btn");
+  if(btn) btn.disabled=false;
+}
+function nextLesson(){
+  const lvl = LEVELS.find(l=>l.id===state.levelId);
+  if(state.lessonIndex+1 < lvl.lessons.length){
+    go('lesson',{lessonIndex:state.lessonIndex+1});
+  }else{
+    go('level',{levelId:lvl.id});
+  }
+}
+
+/* ---------- Dashboard ---------- */
+function renderDashboard(){
+  const pct = Math.round((completedCount()/totalLessons())*100);
+  return `<span class="eyebrow">TU PROGRESO</span>
+  <h1>Panel del estudiante</h1>
+  <div class="stat-row">
+    <div class="stat-box"><div class="num">${pct}%</div><div class="lbl">avance general</div></div>
+    <div class="stat-box"><div class="num">${state.xp}</div><div class="lbl">puntos XP</div></div>
+    <div class="stat-box"><div class="num">${completedCount()}/${totalLessons()}</div><div class="lbl">lecciones completadas</div></div>
+    <div class="stat-box"><div class="num">${Object.keys(state.badges).length}/${BADGES.length}</div><div class="lbl">insignias</div></div>
+  </div>
+  <div class="card">
+    <h3>Avance por nivel</h3>
+    ${LEVELS.map(lvl=>{
+      const done = lvl.lessons.filter(l=>state.completedLessons[l.id]).length;
+      return `<div class="level-progress-row">
+        <span class="tag-chip">&lt;${lvl.tag}&gt;</span>
+        <div style="flex:1;">${lvl.title}</div>
+        <div class="mini-bar-track"><div class="mini-bar-fill" style="width:${(done/lvl.lessons.length)*100}%"></div></div>
+        <div style="font-size:12.5px;color:var(--ink-soft);width:40px;text-align:right;">${done}/${lvl.lessons.length}</div>
+      </div>`;
+    }).join("")}
+  </div>
+  <div class="card">
+    <h3>Insignias</h3>
+    ${BADGES.map(b=>`<span class="badge ${state.badges[b.id]?'':'locked'}">${b.icon} ${b.name}</span>`).join("")}
+  </div>`;
+}
+
+/* ---------- Glosario ---------- */
+function renderGlossary(){
+  return `<span class="eyebrow">GLOSARIO</span>
+  <h1>Términos clave</h1>
+  <input id="gloss-search" type="text" placeholder="Buscar un término..." style="width:100%;padding:11px 14px;border:1px solid var(--line);border-radius:10px;font-size:14px;margin-bottom:16px;" oninput="filterGlossary()">
+  <div id="gloss-list"></div>`;
+}
+function filterGlossary(){
+  const q = (document.getElementById("gloss-search").value||"").toLowerCase();
+  const list = GLOSSARY.filter(g=>g.term.toLowerCase().includes(q) || g.def.toLowerCase().includes(q));
+  document.getElementById("gloss-list").innerHTML = list.map(g=>`
+    <div class="gloss-item">
+      <div class="gloss-term">${g.term}</div>
+      <div>${g.def}</div>
+      <div style="font-size:12.5px;color:var(--ink-soft);margin-top:4px;">Ejemplo: ${g.ex}</div>
+    </div>`).join("") || `<p style="color:var(--ink-soft);">No se encontraron términos.</p>`;
+}
+
+/* ---------- Editor libre ---------- */
+function renderFreeEditor(){
+  return `<span class="eyebrow">MODO PROYECTO LIBRE</span>
+  <h1>Editor</h1>
+  <p class="lead">Escribe HTML libremente y observa el resultado al instante. Tu código se guarda automáticamente en este navegador.</p>
+  <div class="editor-wrap">
+    <div class="editor-pane">
+      <div class="pane-head"><span>proyecto.html</span>
+        <span>
+          <button class="btn btn-ghost btn-sm" onclick="copyCode('free-editor')">Copiar</button>
+          <button class="btn btn-ghost btn-sm" onclick="downloadCode('free-editor')">Descargar .html</button>
+        </span>
+      </div>
+      <textarea class="code-input" id="free-editor" style="min-height:420px;">${state.editorSaved}</textarea>
+    </div>
+    <div class="preview-pane">
+      <div class="pane-head"><span>vista previa</span>
+        <button class="btn btn-ghost btn-sm" onclick="toggleFullscreen()">⛶ Pantalla completa</button>
+      </div>
+      <iframe class="preview-frame" id="free-preview" style="min-height:420px;"></iframe>
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="runFreeEditor()">▶ Ejecutar</button>
+    <button class="btn btn-ghost" onclick="clearFreeEditor()">🗑 Limpiar</button>
+    <button class="btn btn-ghost" onclick="resetFreeEditor()">↺ Reiniciar plantilla</button>
+  </div>`;
+}
+function wireEditor(taId, frameId){
+  const ta = document.getElementById(taId);
+  if(!ta) return;
+  runFreeEditor();
+  ta.addEventListener("input", debounce(()=>{ runFreeEditor(); state.editorSaved = ta.value; saveState(); }, 500));
+}
+function runFreeEditor(){
+  const ta = document.getElementById("free-editor");
+  const frame = document.getElementById("free-preview");
+  if(ta && frame) frame.srcdoc = ta.value;
+}
+function clearFreeEditor(){
+  document.getElementById("free-editor").value = "";
+  runFreeEditor();
+}
+function resetFreeEditor(){
+  document.getElementById("free-editor").value = defaultState.editorSaved;
+  runFreeEditor();
+}
+function copyCode(taId){
+  const ta = document.getElementById(taId);
+  navigator.clipboard.writeText(ta.value).then(()=>showToast("Código copiado ✅")).catch(()=>showToast("No se pudo copiar automáticamente. Selecciona y copia manualmente."));
+}
+function downloadCode(taId){
+  const ta = document.getElementById(taId);
+  const blob = new Blob([ta.value], {type:"text/html"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = "mi-pagina.html";
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast("Archivo .html descargado ✅");
+}
+function toggleFullscreen(){
+  const frame = document.getElementById("free-preview");
+  if(frame.requestFullscreen) frame.requestFullscreen();
+  else showToast("Pantalla completa no disponible en este navegador.");
+}
+
+/* ---------- Chat / Pregunta a tu profesor ---------- */
+function renderChat(){
+  return `<span class="eyebrow">PREGUNTA A TU PROFESOR</span>
+  <h1>Asistente de dudas</h1>
+  <p class="lead">Escribe tu duda en palabras simples. Este asistente responde con reglas predefinidas sobre los temas del curso (no es una IA conectada a internet).</p>
+  <div class="card">
+    <div class="chat-log" id="chat-log">
+      ${state.chat.length===0 ? `<div class="chat-msg bot">¡Hola! Soy tu profesor de HTML. Pregúntame, por ejemplo: "¿qué es un atributo?" o "¿por qué mi código no funciona?".</div>` :
+        state.chat.map(m=>`<div class="chat-msg ${m.role}">${m.text}</div>`).join("")}
+    </div>
+    <div class="chat-input-row">
+      <input id="chat-input" type="text" placeholder="Escribe tu pregunta..." onkeydown="if(event.key==='Enter')sendChat()">
+      <button class="btn btn-primary btn-sm" onclick="sendChat()">Enviar</button>
+    </div>
+    <div style="margin-top:10px;">
+      ${["¿Qué es un atributo?","¿Diferencia entre div y section?","Mi código no funciona","¿Qué es href?"].map(q=>`<button class="faq-chip" onclick="document.getElementById('chat-input').value='${q}';sendChat();">${q}</button>`).join("")}
+    </div>
+  </div>`;
+}
+function sendChat(){
+  const input = document.getElementById("chat-input");
+  const text = input.value.trim();
+  if(!text) return;
+  state.chat.push({role:"user", text});
+  const answer = answerFAQ(text);
+  state.chat.push({role:"bot", text:answer});
+  input.value="";
+  saveState();
+  render();
+  const log = document.getElementById("chat-log");
+  if(log) log.scrollTop = log.scrollHeight;
+}
+function answerFAQ(text){
+  const lower = text.toLowerCase();
+  for(const item of FAQ){
+    if(item.kw.some(k=>lower.includes(k))) return item.a;
+  }
+  return "Buena pregunta. Todavía no tengo una respuesta preparada para eso exactamente, pero puedes revisar el <b>Glosario</b> para conceptos clave, o intenta preguntarlo de otra forma, por ejemplo mencionando el nombre de la etiqueta o el problema que ves en pantalla.";
+}
+
+/* ---------- Helpers ---------- */
+function debounce(fn, ms){ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a), ms); }; }
+
+/* ---------- Init ---------- */
+render();
+</script>
+</body>
+</html>
