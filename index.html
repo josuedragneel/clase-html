@@ -178,6 +178,12 @@ main{flex:1;min-width:0;padding:40px 46px 90px;max-width:1000px;}
 /* Editor */
 .editor-wrap{display:flex;gap:16px;margin-top:12px;}
 @media (max-width:760px){.editor-wrap{flex-direction:column;}}
+
+.exam-check-row{display:flex;align-items:center;gap:10px;padding:8px 4px;font-size:14px;color:var(--ink-soft);border-bottom:1px solid var(--line);}
+.exam-check-row:last-child{border-bottom:none;}
+.exam-check-row.ok{color:var(--ink);font-weight:600;}
+.cert-breakdown-row{display:flex;justify-content:space-between;font-size:13.5px;padding:8px 0;border-bottom:1px solid var(--line);}
+.cert-breakdown-row:last-child{border-bottom:none;}
 .editor-pane, .preview-pane{flex:1;min-width:0;border-radius:12px;overflow:hidden;border:1px solid var(--line);box-shadow:var(--shadow);}
 .pane-head{
   background:#F2EFE4;padding:9px 14px;font-size:11.5px;font-family:'JetBrains Mono',monospace;font-weight:600;
@@ -198,6 +204,25 @@ iframe.preview-frame{width:100%;min-height:230px;border:none;background:#fff;}
 .opt-btn:hover:not([disabled]){border-color:var(--green);background:var(--green-tint);transform:translateX(2px);}
 .opt-btn.correct{border-color:var(--green);background:var(--green-tint);color:var(--green-deep);font-weight:700;}
 .opt-btn.wrong{border-color:var(--coral);background:var(--coral-tint);color:#9A3418;}
+
+/* Desafío de ordenar */
+.order-row{
+  display:flex;align-items:center;gap:10px;padding:11px 14px;border:1.5px solid var(--line);border-radius:11px;
+  background:#fff;margin-bottom:9px;font-family:'JetBrains Mono',monospace;font-size:13.5px;
+  transition:border-color .15s ease, box-shadow .15s ease, opacity .15s ease;
+}
+.order-row.dragging{opacity:.55;border-style:dashed;box-shadow:0 8px 18px -6px rgba(0,0,0,.25);position:relative;}
+.order-row:hover{border-color:var(--green);}
+.order-handle{color:var(--ink-soft);font-size:17px;user-select:none;cursor:grab;touch-action:none;padding:4px 2px;}
+.order-handle:active{cursor:grabbing;}
+.order-text{flex:1;}
+.order-btns{display:flex;gap:5px;}
+.order-btn{
+  width:32px;height:32px;border-radius:8px;border:1.5px solid var(--line);background:#fff;font-size:12px;
+  cursor:pointer;color:var(--ink-soft);transition:background .15s ease,color .15s ease;touch-action:manipulation;
+}
+.order-btn:hover:not([disabled]){background:var(--green-tint);color:var(--green-deep);border-color:var(--green);}
+.order-btn[disabled]{opacity:.3;cursor:default;}
 
 /* Dashboard */
 .progress-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:16px 0;}
@@ -851,12 +876,19 @@ const defaultState = {
   chat:[],
   flags:{glossary:false, chat:false, freeEditor:false, downloaded:false, noHintSpot:false, perfectMCQ:false, diagnostic:false, fullscreen:false},
   streak:{count:0, lastDate:null},
-  daily:{date:null, count:0, target:1, totalReached:0}
+  daily:{date:null, count:0, target:1, totalReached:0},
+  certificateName:"", certificateGenerated:false,
+  examCode:"<!DOCTYPE html>\n<html>\n  <head>\n    <title>Mi página final</title>\n  </head>\n  <body>\n    <h1>Escribe aquí tu título</h1>\n    <p>Escribe un párrafo sobre ti o sobre un tema que te guste.</p>\n    <p>Puedes usar <strong>negrita</strong> o <em>cursiva</em> para resaltar algo.</p>\n    <a href=\"https://ejemplo.com\">Un enlace a algo que te interese</a>\n  </body>\n</html>",
+  examCompleted:false
 };
 let state = loadState() || JSON.parse(JSON.stringify(defaultState));
 if(!state.flags) state.flags = JSON.parse(JSON.stringify(defaultState.flags));
 if(!state.streak) state.streak = JSON.parse(JSON.stringify(defaultState.streak));
 if(!state.daily) state.daily = JSON.parse(JSON.stringify(defaultState.daily));
+if(state.certificateName===undefined) state.certificateName = "";
+if(state.certificateGenerated===undefined) state.certificateGenerated = false;
+if(state.examCode===undefined) state.examCode = defaultState.examCode;
+if(state.examCompleted===undefined) state.examCompleted = false;
 
 function updateStreak(){
   const today = new Date().toISOString().slice(0,10);
@@ -943,6 +975,8 @@ const BADGES = [
   {id:"meta_diaria1", name:"Meta cumplida", desc:"Completa tu meta diaria por primera vez.", cond:s=>(s.daily&&s.daily.totalReached||0)>=1, icon:"🎯", rarity:"bronce"},
   {id:"meta_diaria10", name:"Disciplina de programador", desc:"Cumple la meta diaria 10 veces.", cond:s=>(s.daily&&s.daily.totalReached||0)>=10, icon:"📆", rarity:"oro"},
   {id:"reto_dificil", name:"Reto superado", desc:"Completa una lección marcada como Difícil.", cond:s=>Object.keys(s.completedLessons).some(id=>HARD_LESSON_IDS.includes(id)), icon:"🥵", rarity:"plata"},
+  {id:"certificado", name:"Graduado certificado", desc:"Genera tu certificado de finalización (90% del curso completado).", cond:s=>!!s.certificateGenerated, icon:"📜", rarity:"oro"},
+  {id:"examen_final", name:"Examen aprobado", desc:"Aprueba el examen final construyendo tu propia página con lo aprendido.", cond:s=>!!s.examCompleted, icon:"📝", rarity:"oro"},
 ];
 function levelComplete(s, levelId){
   const lvl = LEVELS.find(l=>l.id===levelId);
@@ -951,6 +985,10 @@ function levelComplete(s, levelId){
 }
 function totalLessons(){ return LEVELS.reduce((a,l)=>a+l.lessons.length,0); }
 function completedCount(){ return Object.keys(state.completedLessons).length; }
+function lessonsRatio(){ return totalLessons() ? completedCount()/totalLessons() : 0; }
+function examRatio(){ return state.examCompleted ? 1 : 0; }
+function overallProgress(){ return lessonsRatio()*0.8 + examRatio()*0.2; }
+function certificateEligible(){ return overallProgress() >= 0.9; }
 
 function awardXP(n){ state.xp += n; }
 function checkBadges(){
@@ -1125,6 +1163,8 @@ function renderSidebar(){
   </div>
   <button class="nav-item ${state.page==='home'?'active':''}" onclick="go('home')">🗺️ Mapa de niveles</button>
   <button class="nav-item ${state.page==='dashboard'?'active':''}" onclick="go('dashboard')">🏆 Logros</button>
+  <button class="nav-item ${state.page==='exam'?'active':''}" onclick="go('exam')">📝 Examen final ${state.examCompleted?'✅':''}</button>
+  <button class="nav-item ${state.page==='certificate'?'active':''}" onclick="go('certificate')">🎓 Certificado ${certificateEligible()?'':'🔒'}</button>
   <button class="nav-item ${state.page==='editor'?'active':''}" onclick="go('editor')">🧪 Editor libre</button>
   <button class="nav-item ${state.page==='glossary'?'active':''}" onclick="go('glossary')">📖 Glosario</button>
   <button class="nav-item ${state.page==='chat'?'active':''}" onclick="go('chat')">💬 Pregunta a tu profesor</button>
@@ -1155,6 +1195,8 @@ function render(){
   else if(state.page==="glossary") main.innerHTML = renderGlossary();
   else if(state.page==="editor") main.innerHTML = renderFreeEditor();
   else if(state.page==="chat") main.innerHTML = renderChat();
+  else if(state.page==="certificate") main.innerHTML = renderCertificate();
+  else if(state.page==="exam") main.innerHTML = renderExam();
   afterRenderHooks();
 }
 
@@ -1277,7 +1319,13 @@ function afterRenderHooks(){
   if(state.page==="home"){ startHeroTypewriter(); }
   if(state.page==="diagnostic"){ diagAnswers=[]; renderDiagQuestion(0); }
   if(state.page==="editor"){ wireEditor("free-editor","free-preview"); }
-  if(state.page==="lesson"){ wireLessonEditor(); }
+  if(state.page==="exam"){ wireExamEditor(); }
+  if(state.page==="lesson"){
+    wireLessonEditor();
+    const lvl = LEVELS.find(l=>l.id===state.levelId);
+    const les = lvl && lvl.lessons[state.lessonIndex];
+    if(les && les.challenge && les.challenge.type==="order") initOrderChallenge(les);
+  }
   if(state.page==="chat"){ const log=document.getElementById("chat-log"); if(log) log.scrollTop=log.scrollHeight; }
 }
 function renderDiagQuestion(i){
@@ -1367,9 +1415,8 @@ function renderChallenge(les){
   }
   if(c.type==="order"){
     return `<p>${c.q}</p>
-    <div id="order-list">${c.items.map((it,i)=>`<div class="opt-btn" draggable="false" data-idx="${i}" style="cursor:default;">${it}</div>`).join("")}</div>
-    <p style="font-size:12.5px;color:var(--ink-soft);">Usa los botones para mover cada línea hacia arriba o abajo hasta lograr el orden correcto.</p>
-    <div id="order-controls"></div>
+    <div id="order-list"></div>
+    <p style="font-size:12.5px;color:var(--ink-soft);">Arrastra las líneas, o usa las flechas ▲ ▼, hasta lograr el orden correcto.</p>
     <button class="btn btn-primary btn-sm" style="margin-top:8px;" onclick="answerOrder()">Comprobar orden</button>`;
   }
   if(c.type==="spot"){
@@ -1440,12 +1487,81 @@ function answerFill(){
   if(ok) completeLesson(les.id), enableNext();
 }
 let orderState = null;
+let orderDrag = null; // {pos, el, startY, rects}
+function initOrderChallenge(les){
+  orderState = les.challenge.items.map((_,i)=>i);
+  renderOrderList();
+}
+function renderOrderList(){
+  const box = document.getElementById("order-list");
+  if(!box || !orderState) return;
+  const lvl = LEVELS.find(l=>l.id===state.levelId);
+  const les = lvl.lessons[state.lessonIndex];
+  const items = les.challenge.items;
+  box.innerHTML = orderState.map((itemIdx,pos)=>`
+    <div class="order-row" data-pos="${pos}">
+      <span class="order-handle" title="Arrastrar" onpointerdown="orderPointerDown(event,${pos})">⠿</span>
+      <span class="order-text">${items[itemIdx]}</span>
+      <span class="order-btns">
+        <button type="button" class="order-btn" ${pos===0?'disabled':''} onclick="moveOrderItem(${pos},-1)" aria-label="Subir">▲</button>
+        <button type="button" class="order-btn" ${pos===orderState.length-1?'disabled':''} onclick="moveOrderItem(${pos},1)" aria-label="Bajar">▼</button>
+      </span>
+    </div>`).join("");
+}
+function moveOrderItem(pos,dir){
+  if(!orderState) return;
+  const target = pos+dir;
+  if(target<0 || target>=orderState.length) return;
+  [orderState[pos],orderState[target]] = [orderState[target],orderState[pos]];
+  renderOrderList();
+}
+/* Arrastre con Pointer Events: funciona igual con mouse, dedo (táctil) o lápiz */
+function orderPointerDown(e,pos){
+  if(!orderState) return;
+  const box = document.getElementById("order-list");
+  if(!box) return;
+  const rows = Array.from(box.querySelectorAll(".order-row"));
+  const rects = rows.map(r=>r.getBoundingClientRect());
+  const el = rows[pos];
+  orderDrag = { pos, el, startY: e.clientY, rects };
+  try{ el.setPointerCapture(e.pointerId); }catch(err){}
+  el.classList.add("dragging");
+  el.style.zIndex = "5";
+  e.preventDefault();
+}
+function orderPointerMove(e){
+  if(!orderDrag) return;
+  const dy = e.clientY - orderDrag.startY;
+  orderDrag.el.style.transform = `translateY(${dy}px)`;
+}
+function orderPointerUp(e){
+  if(!orderDrag) return;
+  const dy = e.clientY - orderDrag.startY;
+  const draggedRect = orderDrag.rects[orderDrag.pos];
+  const currentCenter = draggedRect.top + draggedRect.height/2 + dy;
+  let target = orderDrag.pos, bestDist = Infinity;
+  orderDrag.rects.forEach((r,i)=>{
+    const c = r.top + r.height/2;
+    const d = Math.abs(c - currentCenter);
+    if(d < bestDist){ bestDist = d; target = i; }
+  });
+  orderDrag.el.style.transform = "";
+  orderDrag.el.style.zIndex = "";
+  orderDrag.el.classList.remove("dragging");
+  if(target !== orderDrag.pos && orderState){
+    const moved = orderState.splice(orderDrag.pos,1)[0];
+    orderState.splice(target,0,moved);
+  }
+  orderDrag = null;
+  renderOrderList();
+}
 function answerOrder(){
   const lvl = LEVELS.find(l=>l.id===state.levelId);
   const les = lvl.lessons[state.lessonIndex];
-  // Comparación simple: si aún no reordenó manualmente, evaluamos el orden mostrado por defecto vs correctOrder,
-  // así que ofrecemos botones de mover.
-  giveFeedback(false, les.challenge.feedbackOk, "Usa los botones ↑ ↓ (debajo de cada línea) para reordenar, luego vuelve a comprobar.");
+  if(!orderState) return;
+  const ok = JSON.stringify(orderState) === JSON.stringify(les.challenge.correctOrder);
+  giveFeedback(ok, les.challenge.feedbackOk, les.challenge.feedbackBad);
+  if(ok){ completeLesson(les.id); enableNext(); }
 }
 let hintUsed = false;
 function revealHint(kind){
@@ -1519,6 +1635,15 @@ function renderDashboard(){
     <div style="font-size:12.5px;color:var(--ink-soft);margin-top:6px;">${Math.min(state.daily.count,state.daily.target)}/${state.daily.target} hoy · cumplida ${state.daily.totalReached||0} vez/veces en total</div>
   </div>
   <div class="card">
+    <h3>🎓 Camino al certificado</h3>
+    <p class="lead" style="margin-bottom:10px;">${certificateEligible() ? '¡Ya puedes generar tu certificado!' : `Necesitas llegar al 90%, combinando lecciones (80%) y el examen final (20%).`}</p>
+    <div class="mini-bar-track" style="max-width:340px;"><div class="mini-bar-fill" style="width:${Math.min(100,Math.round(overallProgress()*100))}%"></div></div>
+    <div class="cert-breakdown" style="margin-top:12px;">
+      <div class="cert-breakdown-row"><span>📚 Lecciones (80%)</span><span>${completedCount()}/${totalLessons()}</span></div>
+      <div class="cert-breakdown-row"><span>📝 Examen final (20%)</span><span>${state.examCompleted ? '✅ Aprobado' : '⬜ Pendiente'}</span></div>
+    </div>
+  </div>
+  <div class="card">
     <h3>Avance por nivel</h3>
     ${LEVELS.map(lvl=>{
       const done = lvl.lessons.filter(l=>state.completedLessons[l.id]).length;
@@ -1545,6 +1670,113 @@ function renderDashboard(){
     }).join("")}
     </div>
   </div>`;
+}
+
+/* ---------- Certificado ---------- */
+function escXML(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function renderCertificate(){
+  const lessonsPct = Math.round(lessonsRatio()*100);
+  const overallPct = Math.round(overallProgress()*100);
+  if(!certificateEligible()){
+    return `<span class="eyebrow">🎓 CERTIFICADO</span>
+    <h1>Tu certificado de finalización</h1>
+    <p class="lead">Se desbloquea al llegar al 90%, combinando tus lecciones (80% del total) y el examen final (20% del total).</p>
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--ink-soft);margin-bottom:4px;"><span>Progreso total hacia el certificado</span><span><b>${overallPct}%</b> / 90%</span></div>
+      <div class="mini-bar-track" style="max-width:400px;"><div class="mini-bar-fill" style="width:${Math.min(100,overallPct)}%"></div></div>
+      <div class="cert-breakdown">
+        <div class="cert-breakdown-row"><span>📚 Lecciones (vale 80%)</span><span>${completedCount()}/${totalLessons()} · ${lessonsPct}%</span></div>
+        <div class="cert-breakdown-row"><span>📝 Examen final (vale 20%)</span><span>${state.examCompleted ? '✅ Aprobado' : '⬜ Pendiente'}</span></div>
+      </div>
+      <p style="margin-top:14px;color:var(--ink-soft);font-size:13.5px;">${!state.examCompleted ? `No olvides construir y aprobar tu <a href="#" onclick="go('exam');return false;">examen final</a> — es una forma rápida de sumar 20% completo.` : `Ya aprobaste el examen final. Completa más lecciones para llegar al 90% que falta.`}</p>
+    </div>`;
+  }
+  const savedName = escXML(state.certificateName||"");
+  return `<span class="eyebrow">🎓 CERTIFICADO</span>
+  <h1>¡Felicidades! Completaste el ${overallPct}% de AprendeHTML</h1>
+  <p class="lead">Escribe tu nombre tal como quieras que aparezca en el certificado, y descárgalo.</p>
+  <div class="card">
+    <div class="cert-breakdown" style="margin-bottom:14px;">
+      <div class="cert-breakdown-row"><span>📚 Lecciones (80%)</span><span>${completedCount()}/${totalLessons()} · ${lessonsPct}%</span></div>
+      <div class="cert-breakdown-row"><span>📝 Examen final (20%)</span><span>${state.examCompleted ? '✅ Aprobado' : '⬜ Pendiente'}</span></div>
+    </div>
+    <input id="cert-name-input" type="text" placeholder="Tu nombre completo" value="${savedName}" style="width:100%;max-width:420px;padding:11px 14px;border:1px solid var(--line);border-radius:10px;font-size:15px;" onkeydown="if(event.key==='Enter')generateCertificate()">
+    <div class="btn-row" style="margin-top:14px;">
+      <button class="btn btn-primary" onclick="generateCertificate()">🎓 Generar certificado</button>
+    </div>
+  </div>
+  <div id="cert-output"></div>`;
+}
+function buildCertificateSVG(name){
+  const pct = Math.round(overallProgress()*100);
+  const dateStr = new Date().toLocaleDateString('es-PA', {year:'numeric', month:'long', day:'numeric'});
+  const league = currentLeague();
+  const safeName = escXML(name);
+  return `<svg id="cert-svg" viewBox="0 0 1000 700" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;border-radius:14px;">
+    <rect x="0" y="0" width="1000" height="700" fill="#FBF8F2"/>
+    <rect x="18" y="18" width="964" height="664" fill="none" stroke="#2F6F4E" stroke-width="3"/>
+    <rect x="30" y="30" width="940" height="640" fill="none" stroke="#E3B94A" stroke-width="1.5"/>
+    <text x="500" y="118" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="22" fill="#2F6F4E" letter-spacing="5">‹AprendeHTML/&gt;</text>
+    <text x="500" y="195" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="44" fill="#173D2A" font-weight="bold">Certificado de Finalización</text>
+    <text x="500" y="250" text-anchor="middle" font-family="Arial, sans-serif" font-size="17" fill="#5C6B62">Se otorga el presente certificado a</text>
+    <text x="500" y="335" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-size="50" fill="#2F6F4E">${safeName}</text>
+    <rect x="350" y="358" width="300" height="2" fill="#E3B94A"/>
+    <text x="500" y="412" text-anchor="middle" font-family="Arial, sans-serif" font-size="16.5" fill="#3A443E">por completar el ${pct}% del curso de fundamentos de HTML en AprendeHTML,</text>
+    <text x="500" y="440" text-anchor="middle" font-family="Arial, sans-serif" font-size="16.5" fill="#3A443E">incluyendo su examen final, alcanzando la liga ${league.name} ${league.icon} con ${state.xp} XP.</text>
+    <text x="150" y="600" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#5C6B62">${dateStr}</text>
+    <rect x="70" y="572" width="160" height="1.5" fill="#8C9A92"/>
+    <text x="850" y="600" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#5C6B62">AprendeHTML</text>
+    <rect x="770" y="572" width="160" height="1.5" fill="#8C9A92"/>
+    <text x="500" y="595" text-anchor="middle" font-family="Arial, sans-serif" font-size="34" fill="#E3B94A">🏆</text>
+  </svg>`;
+}
+function generateCertificate(){
+  const input = document.getElementById("cert-name-input");
+  const name = (input ? input.value : "").trim();
+  if(name.length<2){ showToast("Escribe tu nombre para generar el certificado."); return; }
+  state.certificateName = name;
+  const nb = checkBadges();
+  state.certificateGenerated = true;
+  saveState();
+  const out = document.getElementById("cert-output");
+  out.innerHTML = `<div class="card cert-card">
+    <div id="cert-svg-wrap">${buildCertificateSVG(name)}</div>
+    <div class="btn-row" style="margin-top:16px;">
+      <button class="btn btn-primary" onclick="downloadCertificatePNG()">⬇️ Descargar certificado (PNG)</button>
+    </div>
+  </div>`;
+  renderSidebar();
+  nb.forEach((b,i)=> setTimeout(()=>showBadgePopup(b), i*1600));
+}
+function downloadCertificatePNG(){
+  const svgEl = document.getElementById("cert-svg");
+  if(!svgEl){ showToast("Genera primero el certificado."); return; }
+  const svgData = new XMLSerializer().serializeToString(svgEl);
+  const svgBlob = new Blob([svgData], {type:"image/svg+xml;charset=utf-8"});
+  const url = URL.createObjectURL(svgBlob);
+  const img = new Image();
+  img.onload = function(){
+    const scale = 2;
+    const canvas = document.createElement("canvas");
+    canvas.width = 1000*scale;
+    canvas.height = 700*scale;
+    const ctx = canvas.getContext("2d");
+    ctx.scale(scale, scale);
+    ctx.drawImage(img, 0, 0, 1000, 700);
+    URL.revokeObjectURL(url);
+    canvas.toBlob(function(blob){
+      if(!blob){ showToast("No se pudo generar la imagen. Intenta de nuevo."); return; }
+      const link = document.createElement("a");
+      const safeFileName = (state.certificateName||"estudiante").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/(^-|-$)/g,"");
+      link.download = `certificado-aprendehtml-${safeFileName||"estudiante"}.png`;
+      link.href = URL.createObjectURL(blob);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }, "image/png");
+  };
+  img.onerror = function(){ showToast("No se pudo generar la imagen. Intenta de nuevo."); URL.revokeObjectURL(url); };
+  img.src = url;
 }
 
 /* ---------- Glosario ---------- */
@@ -1634,6 +1866,89 @@ function toggleFullscreen(){
   else showToast("Pantalla completa no disponible en este navegador.");
 }
 
+/* ---------- Examen final (20% del certificado) ---------- */
+const EXAM_RUBRIC = [
+  {id:"estructura", label:"Tiene la estructura básica: &lt;html&gt; y &lt;body&gt;", test:code=>/<html[\s>]/i.test(code) && /<body[\s>]/i.test(code)},
+  {id:"encabezado", label:"Incluye al menos un encabezado (&lt;h1&gt; a &lt;h6&gt;)", test:code=>/<h[1-6][\s>]/i.test(code)},
+  {id:"parrafo", label:"Incluye al menos un párrafo (&lt;p&gt;)", test:code=>/<p[\s>]/i.test(code)},
+  {id:"enfasis", label:"Usa alguna etiqueta de énfasis (&lt;strong&gt; o &lt;em&gt;)", test:code=>/<(strong|em|b|i)[\s>]/i.test(code)},
+  {id:"enlace", label:"Incluye al menos un enlace (&lt;a href=\"...\"&gt;)", test:code=>/<a\s+[^>]*href\s*=\s*["'][^"']+["'][^>]*>/i.test(code)},
+];
+function renderExam(){
+  return `<span class="eyebrow">📝 EXAMEN FINAL</span>
+  <h1>Construye tu propia página web</h1>
+  <p class="lead">Este es tu proyecto final: usa lo que aprendiste en los niveles anteriores para construir una pequeña página desde cero. Vale el <b>20%</b> de tu certificado (el otro 80% son tus lecciones completadas).</p>
+  ${state.examCompleted ? `<div class="callout ok">🎉 ¡Ya aprobaste el examen final! Puedes seguir editando tu página cuando quieras, no perderás la aprobación.</div>` : ``}
+  <div class="card">
+    <div class="editor-wrap">
+      <div class="editor-pane">
+        <div class="pane-head"><span>examen.html</span></div>
+        <textarea class="code-input" id="exam-editor" style="min-height:360px;">${state.examCode}</textarea>
+      </div>
+      <div class="preview-pane">
+        <div class="pane-head"><span>vista previa</span></div>
+        <iframe class="preview-frame" id="exam-preview" style="min-height:360px;"></iframe>
+      </div>
+    </div>
+    <div class="btn-row" style="margin-top:12px;">
+      <button class="btn btn-primary" onclick="checkExam()">✓ Comprobar examen</button>
+      <button class="btn btn-ghost" onclick="downloadCode('exam-editor')">Descargar .html</button>
+    </div>
+    <div id="exam-feedback"></div>
+  </div>
+  <div class="card">
+    <h3>Lista de requisitos</h3>
+    <div id="exam-checklist">${renderExamChecklist(state.examCode)}</div>
+  </div>`;
+}
+function renderExamChecklist(code){
+  return EXAM_RUBRIC.map(r=>{
+    const ok = r.test(code||"");
+    return `<div class="exam-check-row ${ok?'ok':''}"><span>${ok?'✅':'⬜'}</span><span>${r.label}</span></div>`;
+  }).join("");
+}
+function wireExamEditor(){
+  const ta = document.getElementById("exam-editor");
+  if(!ta) return;
+  runExamEditor();
+  ta.addEventListener("input", debounce(()=>{
+    runExamEditor();
+    state.examCode = ta.value;
+    saveState();
+    const list = document.getElementById("exam-checklist");
+    if(list) list.innerHTML = renderExamChecklist(ta.value);
+  }, 400));
+}
+function runExamEditor(){
+  const ta = document.getElementById("exam-editor");
+  const frame = document.getElementById("exam-preview");
+  if(ta && frame) frame.srcdoc = ta.value;
+}
+function checkExam(){
+  const ta = document.getElementById("exam-editor");
+  const code = ta ? ta.value : "";
+  const list = document.getElementById("exam-checklist");
+  if(list) list.innerHTML = renderExamChecklist(code);
+  const allOk = EXAM_RUBRIC.every(r=>r.test(code));
+  const feedback = document.getElementById("exam-feedback");
+  if(allOk){
+    const wasCompleted = state.examCompleted;
+    state.examCode = code;
+    state.examCompleted = true;
+    const nb = checkBadges();
+    if(!wasCompleted) awardXP(50);
+    saveState();
+    renderSidebar();
+    if(feedback) feedback.innerHTML = `<div class="callout ok">✅ ¡Aprobado! Tu página cumple con todos los requisitos. Ya cuenta el 20% del examen para tu certificado.</div>`;
+    if(!wasCompleted){
+      confettiBurst();
+      nb.forEach((b,i)=> setTimeout(()=>showBadgePopup(b), i*1600));
+    }
+  }else{
+    if(feedback) feedback.innerHTML = `<div class="callout bad">❌ Todavía te falta cumplir algún requisito de la lista de abajo. Revisa los que están sin marcar y vuelve a comprobar.</div>`;
+  }
+}
+
 /* ---------- Chat / Pregunta a tu profesor ---------- */
 function renderChat(){
   return `<span class="eyebrow">PREGUNTA A TU PROFESOR</span>
@@ -1679,6 +1994,10 @@ function answerFAQ(text){
 function debounce(fn, ms){ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a), ms); }; }
 
 /* ---------- Init ---------- */
+document.addEventListener("pointermove", orderPointerMove);
+document.addEventListener("pointerup", orderPointerUp);
+document.addEventListener("pointercancel", orderPointerUp);
+
 updateStreak();
 ensureDaily();
 render();
